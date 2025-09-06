@@ -1,11 +1,16 @@
+import 'package:drugsuremva/E-commers%20Screen/E_HomeScreen.dart';
+import 'package:drugsuremva/auth/createAccount.dart';
+import 'package:drugsuremva/screens/homeScreen.dart';
 import 'package:drugsuremva/screens/login%20screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() async{
-  runApp(const MyApp());
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+import 'auth/login.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();  // Make sure binding is initialized
+  await Firebase.initializeApp();             // Initialize Firebase first
+  runApp(const MyApp());                      // Then run the app
 }
 
 class MyApp extends StatelessWidget {
@@ -14,12 +19,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Medicine E-Commece App',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
       ),
+      routes: {
+        "/login":(context) => Login(),
+        "/signup": (context) =>Createaccount(),
+        "ehome":(context) => EHomescreen()
+      },
       debugShowCheckedModeBanner: false,
-      home: LoginScreen()
+      home: Login(),   // add const if LoginScreen is const constructor
     );
   }
 }

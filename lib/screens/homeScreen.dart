@@ -1,43 +1,38 @@
+import 'package:drugsuremva/E-commers%20Screen/E_HomeScreen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class Homescreen extends StatefulWidget {
+  const Homescreen({super.key});
 
-  Future<String?> getUserName() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      DocumentSnapshot doc = await FirebaseFirestore.instance
-          .collection("users")
-          .doc(user.uid)
-          .get();
-      return doc["name"];
-    }
-    return null;
-  }
+  @override
+  State<Homescreen> createState() => _HomescreenState();
+}
+
+class _HomescreenState extends State<Homescreen> {
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("DrugSure Home")),
-      body: Center(
-        child: FutureBuilder<String?>(
-          future: getUserName(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
-            }
-            if (snapshot.hasData) {
-              return Text(
-                "Welcome, ${snapshot.data} 👋",
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              );
-            }
-            return const Text("Welcome User");
-          },
+      body:SafeArea(
+        child: Center(
+          child: Column(
+            children: [
+              Text("Hello"),
+              ElevatedButton(onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>EHomescreen()));
+              }, child: Text("Ecommerce"))
+            ],
+        
+          ),
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 0,
+          items: [
+            BottomNavigationBarItem(icon: Icon(Icons.shopping_bag),label: 'E-Commerce',),
+            BottomNavigationBarItem(icon: Icon(Icons.shopping_bag),label: 'E-Commerce')
+      ]),
     );
   }
 }
