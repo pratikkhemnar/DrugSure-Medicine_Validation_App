@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:drugsuremva/screens/barcodeScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -41,6 +42,12 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
     _speech.stop();
     super.dispose();
   }
+
+  final List<String> _carouselImages = [
+    'assets/images/img1.jpg',
+    'assets/images/img1.jpg',
+    'assets/images/img1.jpg',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +121,7 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
                   const SizedBox(height: 12),
                   _buildQuickActions(),
                   const SizedBox(height: 24),
+                  _buildCarouselSlider(),
 
 
 
@@ -316,6 +324,34 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
 
   void _navigateToEducation(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => Barcodescreen()));
+  }
+
+  // Carouselider
+  Widget _buildCarouselSlider() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: CarouselSlider(
+        options: CarouselOptions(
+          height: 180,
+          autoPlay: true,
+          enlargeCenterPage: true,
+          viewportFraction: 0.9,
+          autoPlayInterval: const Duration(seconds: 5),
+        ),
+        items: _carouselImages.map((imagePath) {
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              image: DecorationImage(
+                image: AssetImage(imagePath),
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
   }
 
 }
