@@ -28,7 +28,6 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Medicine E-Commece App',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
           useMaterial3: true
         ),
         routes: {
@@ -38,7 +37,7 @@ class MyApp extends StatelessWidget {
           "/mainhomescreen" : (context) => Homescreen()
         },
         debugShowCheckedModeBanner: false,
-        home: Homescreen(),   // add const if LoginScreen is const constructor
+        home: Login(),   // add const if LoginScreen is const constructor
       ),
     );
   }

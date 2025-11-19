@@ -1,10 +1,17 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:drugsuremva/screens/barcodeScreen.dart';
+import 'package:drugsuremva/screens/OurServices_screen/ConsultHomeScreen/chat_screen.dart';
+import 'package:drugsuremva/under_working.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+
+import '../OurServices_screen/ConsultHomeScreen/videocall_screen.dart';
+import '../quick_Actions_Screens/barcodes_screen/entry_page.dart';
+import '../quick_Actions_Screens/symptom_checker_screen.dart';
+import '../quick_Actions_Screens/healthInfoScreen.dart';
+import '../quick_Actions_Screens/nearbypharma.dart';
 
 class StartDefaultScreen extends StatefulWidget {
   const StartDefaultScreen({super.key});
@@ -45,8 +52,8 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
 
   final List<String> _carouselImages = [
     'assets/images/img1.jpg',
-    'assets/images/img1.jpg',
-    'assets/images/img1.jpg',
+    'assets/images/img2.jpg',
+    'assets/images/img3.jpg',
   ];
 
   @override
@@ -66,6 +73,8 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
+
+        // ****************************** BODY ********************************
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -122,8 +131,10 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
                   _buildQuickActions(),
                   const SizedBox(height: 24),
                   _buildCarouselSlider(),
-
-
+                  const SizedBox(height: 20),
+                  _buildSectionTitle("Our Services"),
+                  const SizedBox(height: 12),
+                  _buildServices(context),
 
                 ],
               ),
@@ -134,7 +145,7 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
     );
   }
 
-  /// Search Bar Widget
+  // Search Bar Widget
   Widget _buildSearchBar() {
     return Container(
       decoration: BoxDecoration(
@@ -193,7 +204,7 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const Barcodescreen(),
+                              builder: (context) => QrCodeScanning(),
                             ),
                           );
                         },
@@ -251,17 +262,17 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
         ),
 
         _buildActionButton(
-          icon: Icons.health_and_safety,
+          icon: Icons.add_photo_alternate,
           color: Colors.green,
-          label: "HealthCare",
+          label: "Skin disease",
           onTap: () => _navigateToHealthNews(context),
         ),
 
         _buildActionButton(
-          icon: Icons.school,
+          icon: Icons.search_off_outlined,
           color: Colors.purple,
-          label: "Learn",
-          onTap: () => _navigateToEducation(context),
+          label: "Analysis",
+          onTap: () => _symptomCheckerScreen(context),
         ),
       ],
     );
@@ -311,19 +322,19 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
 
   // Navigation methods
   void _navigateToBarcodeScanner(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => Barcodescreen()));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => QrCodeScanning()));
   }
 
   void _navigateToHealthNews(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => Barcodescreen()));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => UnderWorking()));
   }
 
   void _navigateToNearbyPharmacies(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => Barcodescreen()));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => NearbyPharmaciesPro()));
   }
 
-  void _navigateToEducation(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => Barcodescreen()));
+  void _symptomCheckerScreen(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => SymptomCheckerScreen()));
   }
 
   // Carouselider
@@ -350,6 +361,177 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
             ),
           );
         }).toList(),
+      ),
+    );
+  }
+
+  //*********************** Services **********************
+
+  Widget _buildOurServices(
+      String name,
+      String details,
+      IconData icon,
+      Color color,
+      BuildContext context,
+      Widget targetScreen,
+      ) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => targetScreen),
+        );
+      },
+      child: Container(
+        width: 160,
+        margin: const EdgeInsets.only(right: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+          border: Border.all(
+            color: color.withOpacity(0.1),
+            width: 1,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Icon section
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: color.withOpacity(0.15),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: color.withOpacity(0.2),
+                            blurRadius: 4,
+                            spreadRadius: 1,
+                          ),
+                        ],
+                      ),
+                      child: Icon(icon, size: 20, color: color ,),
+                    ),
+                    SizedBox(width: 10,),
+                    Text(
+                      name,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14.5,
+                        color: Colors.grey[800],
+                        height: 1.3,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              const SizedBox(height: 6),
+              // Details
+              Text(
+                details,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Colors.grey[600],
+                  height: 1.3,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 8),
+
+              // Action Button
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: color.withOpacity(0.2),
+                      width: 0.5,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "Explore",
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: color,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(
+                        Icons.arrow_forward_rounded,
+                        size: 12,
+                        color: color,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  //*********************** Temporary **********************
+
+  Widget _buildServices(BuildContext context) {
+    return Container(
+      height: 140,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: [
+          _buildOurServices(
+            "Cosmetics",
+            "For skin & beauty care",
+            Icons.face,
+            Colors.pinkAccent,
+            context,
+            HealthInformationPage(),
+          ),
+          _buildOurServices(
+            "Consult",
+            "Consult doctors online • 24x7 availability",
+            Icons.phone_in_talk,
+            Colors.teal,
+            context,
+            ChatScreen(currentUserId: FirebaseAuth.instance.currentUser!.uid, peerUserId: "UkA7mhZlz4Re1TPxs8thpXHAH5R2"), // or replace with a specific screen for Teleconsultancy
+          ),
+          _buildOurServices(
+            "Health Service",
+            "Consultations • Lab Tests • Home Care",
+            Icons.medical_services, // More relevant icon for health services
+            Colors.teal, // Consistent with medical theme
+            context,
+            HealthInformationPage(),
+
+            //ConsultScreen(peerUserId: 'UkA7mhZlz4Re1TPxs8thpXHAH5R2', peerName: 'DR.Vaibhav',), // Navigates to your Health Services screen
+          ),
+        ],
       ),
     );
   }

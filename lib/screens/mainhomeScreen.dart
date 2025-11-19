@@ -2,9 +2,11 @@ import 'package:drugsuremva/E-commers%20Screen/E_HomeScreen.dart';
 import 'package:drugsuremva/E-commers%20Screen/navScreens/defaultScreen.dart';
 import 'package:drugsuremva/E-commers%20Screen/navScreens/profile_screen.dart';
 import 'package:drugsuremva/screens/navScreens/startDefaultScreen.dart';
-import 'package:drugsuremva/screens/navScreens/reportScreen.dart';
+import 'package:drugsuremva/screens/navScreens/report_screen/reportScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'navScreens/report_screen/adverse_event_report_screen.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -20,7 +22,7 @@ class _HomescreenState extends State<Homescreen> {
   List navePages =[
     StartDefaultScreen(),
     EHomescreen(),
-    Reportscreen(),
+    AdverseEventReportScreen(),
     ProfileScreen()
   ];
 
