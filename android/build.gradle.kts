@@ -1,3 +1,8 @@
+// android/build.gradle.kts
+import org.gradle.api.tasks.Delete
+import org.gradle.kotlin.dsl.extra
+import java.net.URI
+
 allprojects {
     repositories {
         google()
@@ -19,9 +24,11 @@ subprojects {
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
-plugins {
-    // ...
 
-    // Add the dependency for the Google services Gradle plugin
+// ---------- PLUGINS (Android Gradle Plugin versions) ----------
+plugins {
+    id("com.android.application") version "8.9.1" apply false
     id("com.google.gms.google-services") version "4.4.3" apply false
+    kotlin("android") version "2.1.0" apply false
 }
+
