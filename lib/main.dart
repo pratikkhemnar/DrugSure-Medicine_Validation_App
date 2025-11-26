@@ -7,7 +7,7 @@ import 'package:drugsuremva/screens/mainhomeScreen.dart';
 import 'package:drugsuremva/doctor_consultancy/screens/doctor_list_screen.dart';
 import 'package:drugsuremva/doctor_consultancy/screens/video_call_screen.dart';
 import 'package:drugsuremva/auth/login.dart';
-import 'package:drugsuremva/auth/auth_wrapper.dart'; 
+import 'package:drugsuremva/auth/auth_wrapper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -26,12 +26,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => UserProvider(),)
+        ChangeNotifierProvider(create: (context) => UserProvider()),
       ],
       child: MaterialApp(
         title: 'Medicine E-Commece App',
         theme: ThemeData(
-          useMaterial3: true
+          useMaterial3: true,
         ),
         routes: {
           "/login": (context) => Login(),
