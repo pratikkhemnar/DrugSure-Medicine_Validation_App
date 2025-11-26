@@ -2,12 +2,14 @@ import 'package:drugsuremva/E-commers%20Screen/E_HomeScreen.dart';
 import 'package:drugsuremva/E-commers%20Screen/providers/user_provider_screen.dart';
 import 'package:drugsuremva/auth/check_user_status_Screen.dart';
 import 'package:drugsuremva/auth/createAccount.dart';
+import 'package:drugsuremva/auth/splashScreen.dart';
 import 'package:drugsuremva/screens/mainhomeScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'auth/auth_wrapper.dart';
 import 'auth/login.dart';
 
 void main() async {
@@ -35,9 +37,10 @@ class MyApp extends StatelessWidget {
           "/signup": (context) =>Createaccount(),
           "ehome":(context) => EHomescreen(),
           "/mainhomescreen" : (context) => Homescreen()
+
         },
         debugShowCheckedModeBanner: false,
-        home: Login(),   // add const if LoginScreen is const constructor
+        home: SplashScreen(),   // add const if LoginScreen is const constructor
       ),
     );
   }

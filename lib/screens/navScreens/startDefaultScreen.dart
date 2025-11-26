@@ -1,5 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:drugsuremva/screens/OurServices_screen/ConsultHomeScreen/chat_screen.dart';
+import 'package:drugsuremva/screens/quick_Actions_Screens/barcodes_screen/screens/qr_home_screen.dart';
+import 'package:drugsuremva/screens/quick_Actions_Screens/barcodes_screen/screens/qr_scanner_screen.dart';
 import 'package:drugsuremva/under_working.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
+import '../Drawer/app_drawer.dart';
 import '../OurServices_screen/ConsultHomeScreen/videocall_screen.dart';
-import '../quick_Actions_Screens/barcodes_screen/entry_page.dart';
 import '../quick_Actions_Screens/symptom_checker_screen.dart';
 import '../quick_Actions_Screens/healthInfoScreen.dart';
 import '../quick_Actions_Screens/nearbypharma.dart';
@@ -72,6 +74,7 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
+      drawer: AppDrawer(),
       body: SingleChildScrollView(
 
         // ****************************** BODY ********************************
@@ -204,7 +207,7 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => QrCodeScanning(),
+                              builder: (context) => UnderWorking(),
                             ),
                           );
                         },
@@ -322,7 +325,7 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
 
   // Navigation methods
   void _navigateToBarcodeScanner(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => QrCodeScanning()));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => UnderWorking()));
   }
 
   void _navigateToHealthNews(BuildContext context) {

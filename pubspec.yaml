@@ -52,9 +52,15 @@ dependencies:
   flutter_tts: ^3.8.0
   image_picker: ^1.0.4
   intl: ^0.18.1
-  google_mlkit_barcode_scanning: ^0.10.0
-  google_ml_kit: ^0.16.3
+  google_mlkit_barcode_scanning: ^0.14.1
   camera: ^0.11.2+1
+  video_player: ^2.8.2
+  flutter_blur: ^0.0.2
+  flutter_svg: ^2.0.7
+  dialog_flowtter: ^0.2.0-nullsafety
+
+
+
 
 
 
@@ -84,6 +90,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/durgsure-mva-66a73fa85f7d.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

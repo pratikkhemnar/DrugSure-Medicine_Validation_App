@@ -139,11 +139,7 @@ class _LoginState extends State<Login> {
                                       "You are logged in successfully."),
                                 ),
                               );
-                              Navigator.restorablePushNamedAndRemoveUntil(
-                                context,
-                                "/mainhomescreen",
-                                    (route) => false,
-                              );
+                              Navigator.pushReplacementNamed(context, "/mainhomescreen");
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(content: Text(status)),
