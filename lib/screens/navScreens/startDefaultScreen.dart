@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:drugsuremva/screens/OurServices_screen/ConsultHomeScreen/chat_screen.dart';
-import 'package:drugsuremva/screens/quick_Actions_Screens/barcodes_screen/screens/qr_home_screen.dart';
 import 'package:drugsuremva/screens/quick_Actions_Screens/barcodes_screen/screens/qr_scanner_screen.dart';
 import 'package:drugsuremva/under_working.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -325,7 +324,7 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
 
   // Navigation methods
   void _navigateToBarcodeScanner(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => UnderWorking()));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ScannerScreen()));
   }
 
   void _navigateToHealthNews(BuildContext context) {
