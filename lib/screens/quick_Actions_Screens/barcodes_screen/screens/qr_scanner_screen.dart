@@ -1,13 +1,13 @@
 import 'dart:io';
+// Ensure this path matches where you save the result file above
 import 'package:drugsuremva/screens/quick_Actions_Screens/barcodes_screen/screens/qr_result_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // REQUIRED for DeviceOrientation
+import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
 import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 
 class ScannerScreen extends StatefulWidget {
   const ScannerScreen({super.key});
@@ -23,7 +23,6 @@ class _ScannerScreenState extends State<ScannerScreen> {
   bool _isScanActive = true;
   String _statusText = "Initializing camera...";
 
-  // FIX: Initialize to 1.0 to avoid "Value 0.0 is not between min 1.0..." error
   double _zoomLevel = 1.0;
   double _minZoom = 1.0;
   double _maxZoom = 1.0;
@@ -39,7 +38,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
     if (status.isGranted) {
       _initializeCamera();
     } else {
-      setState(() => _statusText = "Camera permission denied. Please enable it in settings.");
+      setState(() => _statusText = "Camera permission denied.");
     }
   }
 
@@ -67,20 +66,20 @@ class _ScannerScreenState extends State<ScannerScreen> {
 
       await _controller!.initialize();
 
+      // Attempt to set focus mode
       try {
+        // FIX: Use FocusMode.auto (continuousVideo is deprecated/removed in newer versions)
         await _controller!.setFocusMode(FocusMode.auto);
       } catch (e) {
-        // Ignore focus errors
+        // Ignore focus errors if device doesn't support it
       }
 
-      // FIX: Fetch zoom limits and sync _zoomLevel
       try {
         _minZoom = await _controller!.getMinZoomLevel();
         _maxZoom = await _controller!.getMaxZoomLevel();
-        // Ensure starting zoom is valid
         _zoomLevel = _minZoom;
       } catch (e) {
-        // Zoom might not be supported
+        // Zoom info unavailable
       }
 
       if (mounted) {
@@ -169,7 +168,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ResultScreen(rawValue: rawValue),
+        builder: (context) => ScannerResultScreen(rawValue: rawValue),
       ),
     ).then((_) {
       if (mounted) _resumeScanning();
@@ -197,14 +196,16 @@ class _ScannerScreenState extends State<ScannerScreen> {
     }
     if (rotation == null) return null;
 
-    final format = InputImageFormatValue.fromRawValue(image.format.raw);
-
     if (Platform.isAndroid) {
-      if (image.planes.isEmpty) return null;
+      if (image.planes.length >= 1) { // NV21 typically has planes
+        final allBytes = WriteBuffer();
+        for (final plane in image.planes) {
+          allBytes.putUint8List(plane.bytes);
+        }
+        final bytes = allBytes.done().buffer.asUint8List();
 
-      if (image.planes.length == 1) {
         return InputImage.fromBytes(
-          bytes: image.planes[0].bytes,
+          bytes: bytes,
           metadata: InputImageMetadata(
             size: Size(image.width.toDouble(), image.height.toDouble()),
             rotation: rotation,
@@ -213,34 +214,21 @@ class _ScannerScreenState extends State<ScannerScreen> {
           ),
         );
       }
-
-      final allBytes = WriteBuffer();
-      for (final plane in image.planes) {
-        allBytes.putUint8List(plane.bytes);
-      }
-      final bytes = allBytes.done().buffer.asUint8List();
-
-      return InputImage.fromBytes(
-        bytes: bytes,
-        metadata: InputImageMetadata(
-          size: Size(image.width.toDouble(), image.height.toDouble()),
-          rotation: rotation,
-          format: InputImageFormat.nv21,
-          bytesPerRow: image.planes[0].bytesPerRow,
-        ),
-      );
     } else {
-      if (image.planes.isEmpty) return null;
-      return InputImage.fromBytes(
-        bytes: image.planes[0].bytes,
-        metadata: InputImageMetadata(
-          size: Size(image.width.toDouble(), image.height.toDouble()),
-          rotation: rotation,
-          format: InputImageFormat.bgra8888,
-          bytesPerRow: image.planes[0].bytesPerRow,
-        ),
-      );
+      // iOS BGRA8888
+      if (image.planes.isNotEmpty) {
+        return InputImage.fromBytes(
+          bytes: image.planes[0].bytes,
+          metadata: InputImageMetadata(
+            size: Size(image.width.toDouble(), image.height.toDouble()),
+            rotation: rotation,
+            format: InputImageFormat.bgra8888,
+            bytesPerRow: image.planes[0].bytesPerRow,
+          ),
+        );
+      }
     }
+    return null;
   }
 
   static final _orientations = {
@@ -273,6 +261,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
         children: [
           CameraPreview(_controller!),
 
+          // Overlay mask
           ColorFiltered(
             colorFilter: ColorFilter.mode(
                 Colors.black.withOpacity(0.6),
@@ -301,6 +290,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
             ),
           ),
 
+          // Back Button
           Positioned(
             top: 50,
             left: 20,
@@ -324,7 +314,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                 value: _zoomLevel,
                 min: _minZoom,
                 max: _maxZoom > 5.0 ? 5.0 : _maxZoom,
-                activeColor: const Color(0xFF0A5C5A),
+                activeColor: Colors.teal,
                 inactiveColor: Colors.white30,
                 onChanged: (value) {
                   setState(() => _zoomLevel = value);
@@ -334,6 +324,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
             ),
           ),
 
+          // Status & Manual Rescan
           Positioned(
             bottom: 60,
             left: 0,
@@ -358,7 +349,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                     label: const Text("Scan Next"),
                     onPressed: _resumeScanning,
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF0A5C5A),
+                        backgroundColor: Colors.teal,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12)
                     ),

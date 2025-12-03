@@ -37,7 +37,7 @@ migrate_working_dir/
 # Symbolication related
 app.*.symbols
 
-assets/*.json
+assets/durgsure-mva-fc6165734076.json
 
 
 # Obfuscation related

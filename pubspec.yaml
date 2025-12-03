@@ -60,6 +60,7 @@ dependencies:
   dialog_flowtter: ^0.2.0-nullsafety
   socket_io_client: ^3.1.2
   flutter_webrtc: ^1.2.1
+  share_plus: ^10.0.0
 
 
 
@@ -93,7 +94,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
-    - assets/durgsure-mva-66a73fa85f7d.json
+    - assets/durgsure-mva-fc6165734076.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

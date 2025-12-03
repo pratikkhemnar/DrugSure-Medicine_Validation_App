@@ -1,90 +1,77 @@
 import 'package:flutter/material.dart';
 
-// 1. Define a Model for Product Details
-class ProductDetails {
-  final String genericName;
-  final String brandName;
-  final String manufacturer;
-  final String address;
-  final String licenseNumber;
+class MedicineResultScreen extends StatelessWidget {
+  final Map<String, dynamic> data;
 
-  ProductDetails({
-    required this.genericName,
-    required this.brandName,
-    required this.manufacturer,
-    required this.address,
-    required this.licenseNumber,
-  });
-}
-
-class ScannerResultScreen extends StatelessWidget {
-  final String rawValue;
-
-  ScannerResultScreen({Key? key, required this.rawValue}) : super(key: key);
-
-  // 2. MOCK DATABASE
-  final Map<String, ProductDetails> _productDatabase = {
-    // GTIN for Limcee (From your image)
-    "08904145936663": ProductDetails(
-      genericName: "Vitamin C Chewable Tablets 500 mg",
-      brandName: "Limcee®",
-      manufacturer: "Abbott Healthcare Pvt. Ltd.",
-      address: "Plot No. 26A, 27-30, Sector-8A, IIE, SIDCUL, Ranipur, Haridwar",
-      licenseNumber: "21/UA/LL/SC/P-2020",
-    ),
-    // Example for Dolo-650
-    "08901234567890": ProductDetails(
-      genericName: "Paracetamol Tablets IP 650 mg",
-      brandName: "Dolo-650",
-      manufacturer: "Micro Labs Limited",
-      address: "92, Sipcot Industrial Complex, Hosur, TN",
-      licenseNumber: "TN/Drugs/1234",
-    ),
-  };
+  const MedicineResultScreen({Key? key, required this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // --- LOGIC SECTION ---
+    // 1. Get status from data
+    final String statusRaw = data['result'] ?? 'Unknown';
+    final String status = statusRaw.trim();
 
-    // Parse the scanned raw string to get codes
-    final Map<String, String> parsedCodes = _parseMedicineData(rawValue);
-
-    // Get the GTIN (Product ID) from the scan
-    final String scannedGTIN = parsedCodes['GTIN'] ?? "";
-
-    // Look up the product details in our database using the GTIN
-    final ProductDetails? product = _productDatabase[scannedGTIN];
-    final bool isKnownProduct = product != null;
-
-    // --- DESIGN CONFIGURATION ---
+    // 2. Determine Styling based on status
     Color primaryColor;
-    Color secondaryColor;
+    Color secondaryColor; // For gradient
     IconData statusIcon;
     String statusTitle;
     String statusSubtitle;
     IconData overlayIcon;
 
-    if (isKnownProduct) {
-      // GENUINE STYLE
-      primaryColor = Colors.teal;
-      secondaryColor = Colors.greenAccent.shade700;
-      statusIcon = Icons.verified_user_rounded;
-      overlayIcon = Icons.check_circle_outline;
-      statusTitle = "GENUINE";
-      statusSubtitle = "Official Product\nVerified in Database";
-    } else {
-      // UNKNOWN / CAUTION STYLE
-      primaryColor = Colors.orange.shade800;
-      secondaryColor = Colors.orange.shade600;
-      statusIcon = Icons.help_outline_rounded;
-      overlayIcon = Icons.travel_explore; // Searching icon
-      statusTitle = "UNKNOWN";
-      statusSubtitle = "Product not found in\nlocal database";
+    switch (status.toLowerCase()) {
+      case 'genuine':
+      case 'valid':
+      case 'safe':
+        primaryColor = Colors.teal;
+        secondaryColor = Colors.greenAccent.shade700;
+        statusIcon = Icons.verified_user_rounded;
+        overlayIcon = Icons.check_circle_outline;
+        statusTitle = "GENUINE";
+        statusSubtitle = "Official Product\nVerified Safe";
+        break;
+
+      case 'banned':
+        primaryColor = Colors.red.shade800;
+        secondaryColor = Colors.red.shade600;
+        statusIcon = Icons.block_flipped;
+        overlayIcon = Icons.dangerous_outlined;
+        statusTitle = "BANNED";
+        statusSubtitle = "Regulatory Alert\nDo Not Use";
+        break;
+
+      case 'caution':
+      case 'warning':
+        primaryColor = Colors.orange.shade800;
+        secondaryColor = Colors.orange.shade600;
+        statusIcon = Icons.warning_amber_rounded;
+        overlayIcon = Icons.priority_high_rounded;
+        statusTitle = "CAUTION";
+        statusSubtitle = "Potential Issue\nVerify Details";
+        break;
+
+      case 'fake':
+      case 'counterfeit':
+        primaryColor = Colors.red.shade900;
+        secondaryColor = Colors.deepOrange.shade900;
+        statusIcon = Icons.error_outline_rounded;
+        overlayIcon = Icons.cancel_outlined;
+        statusTitle = "FAKE";
+        statusSubtitle = "Counterfeit Alert\nReport Immediately";
+        break;
+
+      default:
+        primaryColor = Colors.grey.shade700;
+        secondaryColor = Colors.grey.shade500;
+        statusIcon = Icons.help_outline_rounded;
+        overlayIcon = Icons.help_outline;
+        statusTitle = "UNKNOWN";
+        statusSubtitle = "Status Unverified\nCheck Manually";
     }
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: true, // Makes the header go behind the status bar
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -149,7 +136,7 @@ class ScannerResultScreen extends StatelessWidget {
                   ),
                 ),
 
-                // 2. Giant Watermark Icon
+                // 2. Giant Watermark Icon (Subtle background)
                 Positioned(
                   right: -30,
                   top: 60,
@@ -237,10 +224,10 @@ class ScannerResultScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(20),
                           child: Row(
                             children: [
-                              Icon(Icons.qr_code_2, color: Colors.grey[400]),
+                              Icon(Icons.info_outline, color: Colors.grey[400]),
                               SizedBox(width: 10),
                               Text(
-                                "Scanned Details",
+                                "Medicine Details",
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -257,19 +244,15 @@ class ScannerResultScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(20),
                           child: Column(
                             children: [
-                              // Database Fields (if found)
-                              _buildDetailRow("Brand Name", isKnownProduct ? product!.brandName : "Unknown", isHighlight: true),
-                              _buildDetailRow("Generic Name", isKnownProduct ? product!.genericName : "N/A"),
-                              _buildDetailRow("Manufacturer", isKnownProduct ? product!.manufacturer : "Unknown"),
-
-                              // Scanned Fields (from Barcode)
-                              _buildDetailRow("Batch Number", parsedCodes['Batch'], isHighlight: true),
-                              _buildDetailRow("Serial Number", parsedCodes['Serial']),
-                              _buildDetailRow("GTIN / UPIC", scannedGTIN.isNotEmpty ? scannedGTIN : "N/A"),
-                              _buildDetailRow("Exp. Date", parsedCodes['Expiry'], isExpiry: true),
-
-                              // License (Database)
-                              _buildDetailRow("License No.", isKnownProduct ? product!.licenseNumber : "N/A"),
+                              _buildDetailRow("Brand Name", data['brandName'], isHighlight: true),
+                              _buildDetailRow("Generic Name", data['genericName']),
+                              _buildDetailRow("Manufacturer", data['manufacturer']),
+                              _buildDetailRow("Batch Number", data['batchNumber']),
+                              _buildDetailRow("Serial Number", data['serialNumber']),
+                              _buildDetailRow("UPIC Code", data['upic']),
+                              _buildDetailRow("Mfg. Date", data['manufactureDate']),
+                              _buildDetailRow("Exp. Date", data['expiryDate'], isExpiry: true),
+                              _buildDetailRow("License No.", data['licenseNo']),
                             ],
                           ),
                         ),
@@ -288,12 +271,12 @@ class ScannerResultScreen extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.verified, size: 16, color: primaryColor),
+                              Icon(Icons.verified, size: 16, color: Colors.teal),
                               SizedBox(width: 6),
                               Text(
-                                isKnownProduct ? "Verified by DrugSure Database" : "Not found in Local Database",
+                                "Verified by DrugSure Database",
                                 style: TextStyle(
-                                  color: primaryColor,
+                                  color: Colors.teal[700],
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -314,9 +297,9 @@ class ScannerResultScreen extends StatelessWidget {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: Icon(Icons.qr_code_scanner, color: Colors.white),
+                      icon: Icon(Icons.search, color: Colors.white),
                       label: Text(
-                        "SCAN ANOTHER",
+                        "SEARCH ANOTHER",
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -343,12 +326,7 @@ class ScannerResultScreen extends StatelessWidget {
     );
   }
 
-  // --- HELPER WIDGETS ---
-
   Widget _buildDetailRow(String label, String? value, {bool isHighlight = false, bool isExpiry = false}) {
-    // Clean up value
-    String displayValue = (value == null || value.isEmpty) ? "N/A" : value;
-
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Row(
@@ -368,7 +346,7 @@ class ScannerResultScreen extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Text(
-              displayValue,
+              value ?? "N/A",
               style: TextStyle(
                 color: isExpiry ? Colors.red[700] : Colors.grey[900],
                 fontSize: 15,
@@ -379,53 +357,5 @@ class ScannerResultScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  // --- PARSING LOGIC (Kept from your original code) ---
-
-  Map<String, String> _parseMedicineData(String raw) {
-    final Map<String, String> data = {};
-
-    // Normalize raw string
-    String clean = raw.replaceAll('(', '').replaceAll(')', '');
-
-    // 1. GTIN (01)
-    RegExp gtinReg = RegExp(r'(?:01)(\d{14})');
-    var match = gtinReg.firstMatch(clean);
-    if (match != null) {
-      data['GTIN'] = match.group(1)!;
-    }
-
-    // 2. Expiry (17)
-    RegExp expiryReg = RegExp(r'(?:17)(\d{6})');
-    match = expiryReg.firstMatch(clean);
-    if (match != null) {
-      String val = match.group(1)!;
-      try {
-        String year = "20${val.substring(0, 2)}";
-        String monthNum = val.substring(2, 4);
-        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        String month = months[int.parse(monthNum) - 1];
-        data['Expiry'] = "$month-$year";
-      } catch (e) {
-        data['Expiry'] = val;
-      }
-    }
-
-    // 3. Batch (10)
-    RegExp batchReg = RegExp(r'(?:10)([a-zA-Z0-9]+)');
-    match = batchReg.firstMatch(clean);
-    if (match != null) {
-      data['Batch'] = match.group(1)!;
-    }
-
-    // 4. Serial (21)
-    RegExp serialReg = RegExp(r'(?:21)([a-zA-Z0-9]+)');
-    match = serialReg.firstMatch(clean);
-    if (match != null) {
-      data['Serial'] = match.group(1)!;
-    }
-
-    return data;
   }
 }

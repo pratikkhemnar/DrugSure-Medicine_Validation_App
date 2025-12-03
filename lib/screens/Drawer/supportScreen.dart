@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:dialog_flowtter/dialog_flowtter.dart';
-import 'package:flutter/services.dart' hide TextInput; // Required for rootBundle
 
 class SupportScreen extends StatefulWidget {
   const SupportScreen({super.key});
@@ -10,10 +9,10 @@ class SupportScreen extends StatefulWidget {
 }
 
 class _SupportScreenState extends State<SupportScreen> {
-  late DialogFlowtter dialogFlowtter;
+  DialogFlowtter? dialogFlowtter;
   final TextEditingController _controller = TextEditingController();
   final List<Map<String, dynamic>> messages = [];
-  bool _isLoading = true; // To prevent sending messages before init
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -23,15 +22,15 @@ class _SupportScreenState extends State<SupportScreen> {
 
   Future<void> _initDialogflow() async {
     try {
-      // CORRECT WAY: Load asset as a string first
-      String jsonString = await rootBundle.loadString('assets/durgsure-mva-66a73fa85f7d.json');
+      print("Attempting to load Dialogflow asset...");
 
-      // Initialize DialogFlowtter with the loaded string
+      // CRITICAL: Ensure this matches your ACTUAL file name in the assets folder exactly.
+      // Common Error: Check hyphens (-) vs underscores (_)
       dialogFlowtter = DialogFlowtter(
-        jsonPath: jsonString,
-        // Alternatively, depending on exact version:
-        // credentials: DialogAuthCredentials.fromJson(jsonString)
+        jsonPath: 'assets/durgsure-mva-fc6165734076.json',
       );
+
+      print("Dialogflow Initialized Successfully");
 
       if (mounted) {
         setState(() {
@@ -39,13 +38,14 @@ class _SupportScreenState extends State<SupportScreen> {
         });
         _showBot(
           "Hi! Welcome to DrugSure Support. How can I help you today?",
-          options: ["About App", "How to Use App", "How It Works"],
+          options: ["About App", "How to Use App", "Report Issue"],
         );
       }
     } catch (e) {
-      print("Error initializing Dialogflow: $e");
+      print("CRITICAL ERROR initializing Dialogflow: $e");
       if (mounted) {
-        _showBot("Error connecting to support system.");
+        setState(() => _isLoading = false);
+        _showBot("Error: Could not connect. Check your internet and asset file name.");
       }
     }
   }
@@ -70,32 +70,45 @@ class _SupportScreenState extends State<SupportScreen> {
 
     _controller.clear();
 
+    if (dialogFlowtter == null) {
+      print("Error: DialogFlowtter is NULL. Init failed previously.");
+      _showBot("Support service is not initialized. Please restart the page.");
+      return;
+    }
+
     try {
-      final response = await dialogFlowtter.detectIntent(
-        queryInput: QueryInput(text: TextInput(text: text)),
+      print("Sending message to Dialogflow: $text");
+
+      final response = await dialogFlowtter!.detectIntent(
+        queryInput: QueryInput(text: TextInput(text: text, languageCode: "en")),
       );
 
-      if (response.message == null) return;
+      if (response.message == null) {
+        print("Received NULL message from Dialogflow");
+        return;
+      }
 
       // Extract text safely
-      String? textResponse = response.message!.text?.text?.isNotEmpty == true
-          ? response.message!.text!.text![0]
-          : "I didn't catch that.";
+      String textResponse = "I didn't understand that.";
 
-      // Extract Payload/Options (if your Dialogflow agent sends custom payloads)
-      // This is a basic implementation; customize based on your agent setup
-      List<String>? options;
+      // Check message structure
+      if (response.message?.text?.text?.isNotEmpty == true) {
+        textResponse = response.message!.text!.text![0];
+      } else {
+        print("Response received but had no text content.");
+      }
 
-      _showBot(textResponse, options: options);
+      _showBot(textResponse);
 
     } catch (e) {
-      _showBot("Support is currently unavailable. Please try again later.");
+      print("Error sending message: $e");
+      _showBot("Connection error. Please check your internet.");
     }
   }
 
   @override
   void dispose() {
-    dialogFlowtter.dispose();
+    dialogFlowtter?.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -105,37 +118,33 @@ class _SupportScreenState extends State<SupportScreen> {
     final String text = msg["text"];
     final List<String>? options = msg["options"];
 
-    // Message Bubble
-    final bubble = Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: isUser ? const Color(0xFF0A5C5A) : Colors.grey[200],
-        borderRadius: BorderRadius.only(
-          topLeft: const Radius.circular(12),
-          topRight: const Radius.circular(12),
-          bottomLeft: isUser ? const Radius.circular(12) : Radius.zero,
-          bottomRight: isUser ? Radius.zero : const Radius.circular(12),
-        ),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: isUser ? Colors.white : Colors.black87,
-        ),
-      ),
-    );
-
-    // Layout for Bubble + Options
     return Align(
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 6),
+        margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
         constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
         child: Column(
-          crossAxisAlignment:
-          isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
-            bubble,
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: isUser ? const Color(0xFF0A5C5A) : Colors.grey[200],
+                borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(12),
+                  topRight: const Radius.circular(12),
+                  bottomLeft: isUser ? const Radius.circular(12) : Radius.zero,
+                  bottomRight: isUser ? Radius.zero : const Radius.circular(12),
+                ),
+              ),
+              child: Text(
+                text,
+                style: TextStyle(
+                  color: isUser ? Colors.white : Colors.black87,
+                  fontSize: 15,
+                ),
+              ),
+            ),
             if (options != null && options.isNotEmpty) ...[
               const SizedBox(height: 8),
               Wrap(
@@ -173,25 +182,39 @@ class _SupportScreenState extends State<SupportScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Customer Support"),
+        title: const Text("DrugSure Support"),
         backgroundColor: const Color(0xFF0A5C5A),
         foregroundColor: Colors.white,
+        elevation: 0,
       ),
       body: Column(
         children: [
           Expanded(
             child: messages.isEmpty
-                ? const Center(child: Text("Start a conversation..."))
+                ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.support_agent, size: 60, color: Colors.grey[300]),
+                  const SizedBox(height: 10),
+                  const Text("Start a conversation...", style: TextStyle(color: Colors.grey)),
+                ],
+              ),
+            )
                 : ListView.builder(
               reverse: true,
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.symmetric(vertical: 20),
               itemCount: messages.length,
               itemBuilder: (context, i) => buildMessage(messages[i]),
             ),
           ),
-
-          // Input Area
+          if (_isLoading)
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: LinearProgressIndicator(color: Color(0xFF0A5C5A)),
+            ),
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
@@ -210,24 +233,26 @@ class _SupportScreenState extends State<SupportScreen> {
                   child: TextField(
                     controller: _controller,
                     enabled: !_isLoading,
+                    textCapitalization: TextCapitalization.sentences,
                     decoration: InputDecoration(
-                      hintText: _isLoading ? "Connecting..." : "Type a message...",
+                      hintText: "Type a message...",
+                      hintStyle: TextStyle(color: Colors.grey[400]),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25),
                           borderSide: BorderSide.none
                       ),
                       filled: true,
                       fillColor: Colors.grey[100],
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     ),
                     onSubmitted: _sendMessage,
                   ),
                 ),
                 const SizedBox(width: 8),
                 CircleAvatar(
-                  backgroundColor: const Color(0xFF0A5C5A),
+                  backgroundColor: _isLoading ? Colors.grey : const Color(0xFF0A5C5A),
                   child: IconButton(
-                    onPressed: () => _sendMessage(_controller.text),
+                    onPressed: _isLoading ? null : () => _sendMessage(_controller.text),
                     icon: const Icon(Icons.send, color: Colors.white, size: 20),
                   ),
                 ),

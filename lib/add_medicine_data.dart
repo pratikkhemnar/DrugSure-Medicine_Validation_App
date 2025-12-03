@@ -20,10 +20,21 @@ class _AddMedicineScreenState extends State<AddMedicineScreen> {
   final expDateController = TextEditingController();
   final licenseController = TextEditingController();
 
+  // Replaced validateController with a Dropdown variable
+  String? selectedStatus;
+  final List<String> statusOptions = ["Genuine", "Banned", "Fake"];
+
   bool loading = false;
 
   Future<void> saveMedicine() async {
     if (!_formKey.currentState!.validate()) return;
+
+    if (selectedStatus == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please select a Verification Result status")),
+      );
+      return;
+    }
 
     setState(() => loading = true);
 
@@ -37,6 +48,7 @@ class _AddMedicineScreenState extends State<AddMedicineScreen> {
       "manufactureDate": mfgDateController.text.trim(),
       "expiryDate": expDateController.text.trim(),
       "licenseNo": licenseController.text.trim(),
+      "result": selectedStatus, // Store the dropdown value
 
       // LOWERCASE fields for searching
       "brandNameLower": brandController.text.trim().toLowerCase(),
@@ -63,6 +75,9 @@ class _AddMedicineScreenState extends State<AddMedicineScreen> {
       mfgDateController.clear();
       expDateController.clear();
       licenseController.clear();
+      setState(() {
+        selectedStatus = null;
+      });
 
     } catch (e) {
       setState(() => loading = false);
@@ -111,7 +126,11 @@ class _AddMedicineScreenState extends State<AddMedicineScreen> {
         child: Form(
           key: _formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text("Product Details", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal)),
+              SizedBox(height: 10),
+
               _buildTextField("Serial Number", serialController),
               _buildTextField("UPIC Code", upicController),
               _buildTextField("Generic Name", genericController),
@@ -121,19 +140,57 @@ class _AddMedicineScreenState extends State<AddMedicineScreen> {
               _buildTextField("Manufacture Date (e.g., Jun-2025)", mfgDateController),
               _buildTextField("Expiry Date (e.g., May-2027)", expDateController),
               _buildTextField("License Number", licenseController),
-              SizedBox(height: 20),
 
-              loading
-                  ? CircularProgressIndicator()
-                  : ElevatedButton(
-                onPressed: saveMedicine,
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 14, horizontal: 30),
-                  backgroundColor: Colors.teal,
+              SizedBox(height: 20),
+              Text("Verification Status", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal)),
+              SizedBox(height: 10),
+
+              // Dropdown for Status
+              DropdownButtonFormField<String>(
+                value: selectedStatus,
+                decoration: InputDecoration(
+                  labelText: "Select Result Status",
+                  border: OutlineInputBorder(),
                 ),
-                child: Text("Save Medicine",
-                    style: TextStyle(fontSize: 18, color: Colors.white)),
+                items: statusOptions.map((status) {
+                  return DropdownMenuItem(
+                    value: status,
+                    child: Text(
+                      status,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: status == "Genuine" ? Colors.green
+                            : status == "Banned" ? Colors.red
+                            : status == "Caution" ? Colors.orange
+                            : Colors.red[900],
+                      ),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (val) {
+                  setState(() {
+                    selectedStatus = val;
+                  });
+                },
+                validator: (val) => val == null ? "Please select a status" : null,
               ),
+
+              SizedBox(height: 30),
+
+              Center(
+                child: loading
+                    ? CircularProgressIndicator()
+                    : ElevatedButton(
+                  onPressed: saveMedicine,
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 14, horizontal: 50),
+                    backgroundColor: Colors.teal,
+                  ),
+                  child: Text("Save Medicine",
+                      style: TextStyle(fontSize: 18, color: Colors.white)),
+                ),
+              ),
+              SizedBox(height: 30),
             ],
           ),
         ),
