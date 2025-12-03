@@ -1,5 +1,4 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:drugsuremva/screens/OurServices_screen/ConsultHomeScreen/chat_screen.dart';
 import 'package:drugsuremva/screens/quick_Actions_Screens/barcodes_screen/screens/qr_scanner_screen.dart';
 import 'package:drugsuremva/under_working.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,9 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
-
 import '../Drawer/app_drawer.dart';
-import '../OurServices_screen/ConsultHomeScreen/videocall_screen.dart';
+import '../OurServices_screen/doctor_consultancy/screens/doctor_list_screen.dart';
 import '../quick_Actions_Screens/symptom_checker_screen.dart';
 import '../quick_Actions_Screens/healthInfoScreen.dart';
 import '../quick_Actions_Screens/nearbypharma.dart';
@@ -508,20 +506,21 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
         scrollDirection: Axis.horizontal,
         children: [
           _buildOurServices(
+              "Consult",
+              "Consult doctors online • 24x7 availability",
+              Icons.phone_in_talk,
+              Colors.teal,
+              context,
+              DoctorListScreen()
+            //ChatScreen(currentUserId: FirebaseAuth.instance.currentUser!.uid, peerUserId: "UkA7mhZlz4Re1TPxs8thpXHAH5R2"), // or replace with a specific screen for Teleconsultancy
+          ),
+          _buildOurServices(
             "Cosmetics",
             "For skin & beauty care",
             Icons.face,
             Colors.pinkAccent,
             context,
             HealthInformationPage(),
-          ),
-          _buildOurServices(
-            "Consult",
-            "Consult doctors online • 24x7 availability",
-            Icons.phone_in_talk,
-            Colors.teal,
-            context,
-            ChatScreen(currentUserId: FirebaseAuth.instance.currentUser!.uid, peerUserId: "UkA7mhZlz4Re1TPxs8thpXHAH5R2"), // or replace with a specific screen for Teleconsultancy
           ),
           _buildOurServices(
             "Health Service",

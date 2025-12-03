@@ -50,15 +50,6 @@ class _HomescreenState extends State<Homescreen> {
           BottomNavigationBarItem(icon: Icon(Icons.manage_accounts_outlined), label: "Profile"),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.pushNamed(context, '/doctor-list');
-        },
-        icon: const Icon(Icons.medical_services),
-        label: const Text('Doctor Consult'),
-        backgroundColor: Colors.teal,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

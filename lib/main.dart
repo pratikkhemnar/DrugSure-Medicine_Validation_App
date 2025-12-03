@@ -3,15 +3,16 @@ import 'package:drugsuremva/E-commers%20Screen/E_HomeScreen.dart';
 import 'package:drugsuremva/E-commers%20Screen/providers/user_provider_screen.dart';
 import 'package:drugsuremva/auth/check_user_status_Screen.dart';
 import 'package:drugsuremva/auth/createAccount.dart';
+import 'package:drugsuremva/screens/OurServices_screen/doctor_consultancy/screens/doctor_list_screen.dart';
 import 'package:drugsuremva/screens/mainhomeScreen.dart';
-import 'package:drugsuremva/doctor_consultancy/screens/doctor_list_screen.dart';
-import 'package:drugsuremva/doctor_consultancy/screens/video_call_screen.dart';
 import 'package:drugsuremva/auth/login.dart';
 import 'package:drugsuremva/auth/auth_wrapper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'auth/splashScreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();  // Make sure binding is initialized
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
           // add other routes here as needed
         },
         debugShowCheckedModeBanner: false,
-        home: Login(),
+        home: SplashScreen(),
       ),
     );
   }
