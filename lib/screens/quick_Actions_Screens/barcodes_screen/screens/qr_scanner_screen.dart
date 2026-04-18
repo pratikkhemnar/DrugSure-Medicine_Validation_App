@@ -66,9 +66,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
 
       await _controller!.initialize();
 
-      // Attempt to set focus mode
       try {
-        // FIX: Use FocusMode.auto (continuousVideo is deprecated/removed in newer versions)
         await _controller!.setFocusMode(FocusMode.auto);
       } catch (e) {
         // Ignore focus errors if device doesn't support it

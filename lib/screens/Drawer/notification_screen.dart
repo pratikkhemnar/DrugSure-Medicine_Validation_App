@@ -24,22 +24,22 @@ class NotificationScreen extends StatelessWidget {
             .orderBy('timestamp', descending: true) // Newest first
             .snapshots(),
         builder: (context, snapshot) {
-          // 1. Loading State
+          // Loading State
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator(color: Colors.teal));
           }
 
-          // 2. Error State
+          // Error State
           if (snapshot.hasError) {
             return Center(child: Text("Error: ${snapshot.error}"));
           }
 
-          // 3. Empty State
+          // Empty State
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return _buildEmptyState();
           }
 
-          // 4. List of Notifications
+          // List of Notifications
           final notifications = snapshot.data!.docs;
 
           return ListView.builder(

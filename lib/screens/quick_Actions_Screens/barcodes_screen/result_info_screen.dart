@@ -7,11 +7,10 @@ class MedicineResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 1. Get status from data
+
     final String statusRaw = data['result'] ?? 'Unknown';
     final String status = statusRaw.trim();
 
-    // 2. Determine Styling based on status
     Color primaryColor;
     Color secondaryColor; // For gradient
     IconData statusIcon;
@@ -112,7 +111,7 @@ class MedicineResultScreen extends StatelessWidget {
               clipBehavior: Clip.none,
               alignment: Alignment.center,
               children: [
-                // 1. Gradient Background
+
                 Container(
                   height: 320,
                   width: double.infinity,
@@ -136,7 +135,7 @@ class MedicineResultScreen extends StatelessWidget {
                   ),
                 ),
 
-                // 2. Giant Watermark Icon (Subtle background)
+
                 Positioned(
                   right: -30,
                   top: 60,
@@ -147,7 +146,6 @@ class MedicineResultScreen extends StatelessWidget {
                   ),
                 ),
 
-                // 3. Central Status Content
                 Positioned(
                   top: 100,
                   child: Column(

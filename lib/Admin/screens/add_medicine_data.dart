@@ -20,7 +20,6 @@ class _AddMedicineScreenState extends State<AddMedicineScreen> {
   final expDateController = TextEditingController();
   final licenseController = TextEditingController();
 
-  // Replaced validateController with a Dropdown variable
   String? selectedStatus;
   final List<String> statusOptions = ["Genuine", "Banned", "Fake"];
 

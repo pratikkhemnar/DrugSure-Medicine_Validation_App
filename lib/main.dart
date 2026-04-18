@@ -15,9 +15,9 @@ import 'package:provider/provider.dart';
 import 'auth/splashScreen.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();  // Make sure binding is initialized
-  await Firebase.initializeApp();             // Initialize Firebase first
-  runApp(const MyApp());                      // Then run the app
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => UserProvider()),
       ],
       child: MaterialApp(
-        title: 'Medicine E-Commece App',
+        title: 'Medicine Validation App',
         theme: ThemeData(
           useMaterial3: true,
         ),

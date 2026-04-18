@@ -1,8 +1,8 @@
-import 'package:drugsuremva/add_medicine_data.dart';
+import 'package:drugsuremva/Admin/screens/add_medicine_data.dart';
 import 'package:drugsuremva/auth/login.dart';
 import 'package:drugsuremva/screens/Drawer/appAboutScreen.dart';
 import 'package:drugsuremva/screens/Drawer/supportScreen.dart';
-import 'package:drugsuremva/screens/navScreens/startDefaultScreen.dart';
+import 'package:drugsuremva/screens/navScreens/default_screen/startDefaultScreen.dart';
 import 'package:drugsuremva/under_working.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';

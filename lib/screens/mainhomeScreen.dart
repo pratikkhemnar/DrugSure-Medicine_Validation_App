@@ -1,6 +1,7 @@
 import 'package:drugsuremva/E-commers%20Screen/E_HomeScreen.dart';
 import 'package:drugsuremva/E-commers%20Screen/navScreens/profile_screen.dart';
-import 'package:drugsuremva/screens/navScreens/startDefaultScreen.dart';
+import 'package:drugsuremva/screens/navScreens/E-Commers_Screens/dashboard_screen.dart';
+import 'package:drugsuremva/screens/navScreens/default_screen/startDefaultScreen.dart';
 import 'package:drugsuremva/under_working.dart';
 import 'package:flutter/material.dart';
 
@@ -16,10 +17,9 @@ class Homescreen extends StatefulWidget {
 class _HomescreenState extends State<Homescreen> {
   int chosenIndex = 0;
 
-  // Define your pages here. Ensure these classes exist and are imported correctly.
   final List<Widget> navePages = [
     StartDefaultScreen(),         // Index 0: Home
-    UnderWorking(),                // Index 1: E-Commerce
+    DashboardScreen(),                // Index 1: E-Commerce
     AdverseEventReportScreen(),   // Index 2: Report
     ProfileScreen()               // Index 3: Profile
   ];
@@ -27,14 +27,12 @@ class _HomescreenState extends State<Homescreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // This switches the body automatically based on chosenIndex
+
       body: navePages[chosenIndex],
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed, // Added for better stability with 4+ items
+        type: BottomNavigationBarType.fixed,
         currentIndex: chosenIndex,
         onTap: (index) {
-          // CORRECTED: Just update the index. No need to Navigator.push here
-          // because the body above will update automatically.
           setState(() {
             chosenIndex = index;
           });

@@ -24,7 +24,7 @@ class ScannerResultScreen extends StatelessWidget {
 
   // 2. MOCK DATABASE
   final Map<String, ProductDetails> _productDatabase = {
-    // GTIN for Limcee (From your image)
+    // GTIN for Limcee
     "08904145936663": ProductDetails(
       genericName: "Vitamin C Chewable Tablets 500 mg",
       brandName: "Limcee®",
@@ -380,8 +380,6 @@ class ScannerResultScreen extends StatelessWidget {
       ),
     );
   }
-
-  // --- PARSING LOGIC (Kept from your original code) ---
 
   Map<String, String> _parseMedicineData(String raw) {
     final Map<String, String> data = {};

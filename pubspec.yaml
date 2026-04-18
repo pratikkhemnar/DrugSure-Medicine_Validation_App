@@ -62,13 +62,6 @@ dependencies:
   flutter_webrtc: ^1.2.1
   share_plus: ^10.0.0
 
-
-
-
-
-
-
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -95,6 +88,7 @@ flutter:
   assets:
     - assets/images/
     - assets/durgsure-mva-fc6165734076.json
+    - assets/Cosmetics_images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

@@ -8,13 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
-import '../Drawer/app_drawer.dart';
-import '../Drawer/notification_screen.dart';
-import '../OurServices_screen/doctor_consultancy/screens/doctor_list_screen.dart';
-import '../quick_Actions_Screens/barcodes_screen/result_info_screen.dart';
-import '../quick_Actions_Screens/symptom_checker_screen.dart';
-import '../quick_Actions_Screens/healthInfoScreen.dart';
-import '../quick_Actions_Screens/nearbypharma.dart';
+import '../../Drawer/app_drawer.dart';
+import '../../Drawer/notification_screen.dart';
+import '../../OurServices_screen/Cosmetics/cosmeticsscreen.dart';
+import '../../OurServices_screen/doctor_consultancy/screens/doctor_list_screen.dart';
+import '../../quick_Actions_Screens/barcodes_screen/result_info_screen.dart';
+import '../../quick_Actions_Screens/symptom_checker_screen.dart';
+import '../../OurServices_screen/healthInfoScreen.dart';
+import '../../quick_Actions_Screens/nearbypharma.dart';
 
 
 class StartDefaultScreen extends StatefulWidget {
@@ -148,17 +149,17 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
     super.dispose();
   }
 
-  // ✅ UPDATED IMAGES: High quality medical theme images from Unsplash
+
   final List<Map<String, String>> _carouselItems = [
 
     {
-      // Image: Medicine/Lab - Reliable
+
       "image": "https://images.pexels.com/photos/7289717/pexels-photo-7289717.jpeg",
       "title": "Verify Medicine",
       "subtitle": "Scan QR codes instantly to ensure authenticity."
     },
     {
-      // Image: Medicine/Lab - Reliable
+
       "image": "https://images.unsplash.com/photo-1584017911766-d451b3d0e843?auto=format&fit=crop&w=800&q=80",
       "title": "Verify Medicine",
       "subtitle": "Scan QR codes instantly to ensure authenticity."
@@ -192,7 +193,7 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
-          // 🔔 NOTIFICATION ICON ADDED HERE
+
           IconButton(
             icon: const Icon(Icons.notifications),
             onPressed: () {
@@ -302,11 +303,6 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
     );
   }
 
-  // ... [Previous Helper Widgets] ...
-  // Keep all helper methods (_buildSearchBar, _buildQuickActions, _buildServices, _buildRealAlertsList, etc.) exactly as they were.
-
-
-  // --- HELPER METHODS STUB (Replace with full code if copying fresh) ---
   Widget _buildSearchBar() {
     return Container(
       decoration: BoxDecoration(
@@ -360,7 +356,7 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
                         onPressed: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => UnderWorking())),
+                                builder: (context) => ScannerScreen() )),
                       ),
                     ],
                   ),
@@ -581,7 +577,7 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
           _buildOurServices("Consult", "Consult doctors online • 24x7",
               Icons.phone_in_talk, Colors.teal, context, DoctorListScreen()),
           _buildOurServices("Cosmetics", "For skin & beauty care", Icons.face,
-              Colors.pinkAccent, context, UnderWorking()),
+              Colors.pinkAccent, context,  CosmeticsScreen()),
           _buildOurServices("Health Service", "Tests • Home Care", Icons.medical_services, Colors.blue, context, HealthInformationPage()),
         ],
       ),
