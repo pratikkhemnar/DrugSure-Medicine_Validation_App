@@ -1,5 +1,6 @@
 import 'package:drugsuremva/E-commers%20Screen/E_HomeScreen.dart';
 import 'package:drugsuremva/E-commers%20Screen/navScreens/profile_screen.dart';
+import 'package:drugsuremva/auth/profileScreen.dart';
 import 'package:drugsuremva/screens/navScreens/E-Commers_Screens/dashboard_screen.dart';
 import 'package:drugsuremva/screens/navScreens/default_screen/startDefaultScreen.dart';
 import 'package:drugsuremva/under_working.dart';
@@ -21,7 +22,7 @@ class _HomescreenState extends State<Homescreen> {
     StartDefaultScreen(),         // Index 0: Home
     DashboardScreen(),                // Index 1: E-Commerce
     AdverseEventReportScreen(),   // Index 2: Report
-    ProfileScreen()               // Index 3: Profile
+    ProfileScreens()               // Index 3: Profile
   ];
 
   @override

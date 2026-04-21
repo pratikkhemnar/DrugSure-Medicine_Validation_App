@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../Admin/screens/adminDashboard_screen.dart';
 import '../../E-commers Screen/navScreens/profile_screen.dart';
+import '../../auth/profileScreen.dart';
 import 'notification_screen.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -40,7 +41,7 @@ class AppDrawer extends StatelessWidget {
         ),
       ),
       currentAccountPicture: GestureDetector(
-        onTap: () => _navigateTo(context, const ProfileScreen()),
+        onTap: () => _navigateTo(context, const ProfileScreens()),
         child: CircleAvatar(
           backgroundColor: Colors.white,
           child: Icon(Icons.person, size: 45, color: Colors.grey.shade700),

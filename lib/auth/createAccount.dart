@@ -17,17 +17,18 @@ class _CreateaccountState extends State<Createaccount> {
   final TextEditingController nameTextEditingController = TextEditingController();
   final TextEditingController emailTextEditingController = TextEditingController();
   final TextEditingController passTextEditingController = TextEditingController();
+  final TextEditingController phoneTextEditingController = TextEditingController();
 
   bool isLoading = false;
 
-  Future<String> createUserAccount(String name, String email, String pass) async {
+  Future<String> createUserAccount(String name, String email, String pass, String phone) async {
     try {
       setState(() => isLoading = true);
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: pass,
       );
-      await saveUserData(name, email);
+      await saveUserData(name, email, phone);
       setState(() => isLoading = false);
       return "Signup Success";
     } on FirebaseAuthException catch (ecp) {
@@ -36,11 +37,16 @@ class _CreateaccountState extends State<Createaccount> {
     }
   }
 
-  Future<void> saveUserData(String name, String email) async {
+  Future<void> saveUserData(String name, String email, String phone) async {
     try {
       Map<String, dynamic> userData = {
+        "uid": FirebaseAuth.instance.currentUser!.uid,
         "name": name,
         "email": email,
+        "phone": phone,
+        "profileImage": "",
+        "role": "user",
+        "createdAt": FieldValue.serverTimestamp(),
       };
       await FirebaseFirestore.instance
           .collection("users")
@@ -122,6 +128,21 @@ class _CreateaccountState extends State<Createaccount> {
                   ),
                   const SizedBox(height: 15),
 
+                  // Phone
+                  TextFormField(
+                    controller: phoneTextEditingController,
+                    validator: (value) =>
+                    value!.isEmpty ? "Phone number cannot be empty." : null,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.phone),
+                      labelText: "Phone Number",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+
                   // Password
                   TextFormField(
                     controller: passTextEditingController,
@@ -152,6 +173,7 @@ class _CreateaccountState extends State<Createaccount> {
                             nameTextEditingController.text.trim(),
                             emailTextEditingController.text.trim(),
                             passTextEditingController.text.trim(),
+                            phoneTextEditingController.text.trim(),
                           ).then((status) {
                             if (status == "Signup Success") {
                               ScaffoldMessenger.of(context).showSnackBar(

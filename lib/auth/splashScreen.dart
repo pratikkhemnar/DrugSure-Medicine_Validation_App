@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'auth_wrapper.dart'; // 👈 import this
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -30,17 +30,14 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
-    // Auto-Login after animation
+    // ✅ ONLY navigation after 3 sec (NO Firebase check here)
     Timer(const Duration(seconds: 3), () {
-      final user = FirebaseAuth.instance.currentUser;
-
-      if (user != null) {
-        // User already logged in → go to dashboard
-        Navigator.pushReplacementNamed(context, "/mainhomescreen");
-      } else {
-        // Not logged in → go to login
-        Navigator.pushReplacementNamed(context, "/login");
-      }
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const AuthWrapper(),
+        ),
+      );
     });
   }
 
@@ -53,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A5C5A), // Teal-Green theme for DrugSure
+      backgroundColor: const Color(0xFF0A5C5A),
       body: Center(
         child: FadeTransition(
           opacity: _fadeAnimation,
@@ -67,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen>
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: Colors.white,
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(
                       color: Colors.black26,
                       blurRadius: 12,
@@ -83,7 +80,6 @@ class _SplashScreenState extends State<SplashScreen>
 
               const SizedBox(height: 20),
 
-              // APP NAME
               const Text(
                 "DrugSure",
                 style: TextStyle(
@@ -96,7 +92,6 @@ class _SplashScreenState extends State<SplashScreen>
 
               const SizedBox(height: 8),
 
-              // TAGLINE
               const Text(
                 "Trusted Medicine Validation",
                 style: TextStyle(
@@ -107,7 +102,6 @@ class _SplashScreenState extends State<SplashScreen>
 
               const SizedBox(height: 40),
 
-              // Loading Indicator
               const CircularProgressIndicator(
                 color: Colors.white,
                 strokeWidth: 2.8,

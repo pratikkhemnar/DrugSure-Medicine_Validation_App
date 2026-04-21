@@ -1,7 +1,6 @@
-import 'package:drugsuremva/screens/mainhomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:drugsuremva/screens/mainhomeScreen.dart';
 import 'login.dart';
 
 class AuthWrapper extends StatelessWidget {
@@ -12,19 +11,22 @@ class AuthWrapper extends StatelessWidget {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        // Still checking login state
+
+        // 🔄 Loading state
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
           );
         }
 
-        // If user is already logged in
+        // ✅ User logged in
         if (snapshot.hasData) {
-          return const Homescreen(); // Your dashboard
+          return const Homescreen(); // Dashboard
         }
 
-        // Not logged in
+        // ❌ Not logged in
         return const Login();
       },
     );

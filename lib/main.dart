@@ -1,7 +1,8 @@
 // lib/main.dart
+import 'package:drugsuremva/Admin/screens/adminDashboard_screen.dart';
 import 'package:drugsuremva/E-commers%20Screen/E_HomeScreen.dart';
 import 'package:drugsuremva/E-commers%20Screen/providers/user_provider_screen.dart';
-import 'package:drugsuremva/auth/check_user_status_Screen.dart';
+import 'package:drugsuremva/auth/AdminAccount.dart';
 import 'package:drugsuremva/auth/createAccount.dart';
 import 'package:drugsuremva/screens/OurServices_screen/doctor_consultancy/screens/doctor_list_screen.dart';
 import 'package:drugsuremva/screens/mainhomeScreen.dart';
@@ -40,10 +41,12 @@ class MyApp extends StatelessWidget {
           "ehome": (context) => EHomescreen(),
           "/mainhomescreen": (context) => Homescreen(),
           "/doctor-list": (context) => DoctorListScreen(),
+          "/createAdmin" :(context) => CreateAdminAccount(),
+          "/adminDashboard" : (context) => AdminDashboardScreen(),
           // add other routes here as needed
         },
         debugShowCheckedModeBanner: false,
-        home: SplashScreen(),
+        home: const SplashScreen(),
       ),
     );
   }

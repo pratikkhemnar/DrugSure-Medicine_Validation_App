@@ -78,7 +78,7 @@ class ScannerResultScreen extends StatelessWidget {
       secondaryColor = Colors.orange.shade600;
       statusIcon = Icons.help_outline_rounded;
       overlayIcon = Icons.travel_explore; // Searching icon
-      statusTitle = "UNKNOWN";
+      statusTitle = "SAFE";
       statusSubtitle = "Product not found in\nlocal database";
     }
 
