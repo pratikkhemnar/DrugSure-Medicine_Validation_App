@@ -34,10 +34,12 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
   }
 
   Future<void> _fetchData() async {
-    final uid = FirebaseAuth.instance.currentUser!.uid;
-    final adminDoc = await FirebaseFirestore.instance.collection('admins').doc(uid).get();
-    if (adminDoc.exists && mounted) {
-      setState(() => adminName = adminDoc['name'] ?? 'Admin');
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null) {
+      final adminDoc = await FirebaseFirestore.instance.collection('admins').doc(uid).get();
+      if (adminDoc.exists && mounted) {
+        setState(() => adminName = adminDoc['name'] ?? 'Admin');
+      }
     }
     await _refreshStats();
   }
@@ -223,7 +225,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
               style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey)),
           const SizedBox(height: 24),
 
-          // Stats Grid
           GridView.count(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -262,7 +263,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
               );
             },
           ),
-          const SizedBox(height: 16),
         ],
       ),
     );
@@ -282,7 +282,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
             value.toString(),
             style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 2),
           Text(
             title,
             style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey),
@@ -371,120 +370,111 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
     );
   }
 
-  Widget _buildAlertForm() => Form(
-    key: GlobalKey<FormState>(),
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text("Post New Alert", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 12),
-        _buildTextField(_controllers['alertTitle']!, "Alert Title"),
-        const SizedBox(height: 8),
-        _buildTextField(_controllers['alertMsg']!, "Alert Message", maxLines: 2),
-        const SizedBox(height: 8),
-        _buildTextField(_controllers['alertDate']!, "Date Label", hint: "e.g., Today"),
-        const SizedBox(height: 12),
-        ElevatedButton.icon(
-          onPressed: () => _addToCollection('alerts', {
-            'title': _controllers['alertTitle']!.text.trim(),
-            'message': _controllers['alertMsg']!.text.trim(),
-            'date': _controllers['alertDate']!.text.trim(),
-            'type': 'info',
-            'timestamp': FieldValue.serverTimestamp(),
-          }),
-          icon: const Icon(Icons.send, size: 18),
-          label: const Text("POST ALERT"),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
-            minimumSize: const Size(double.infinity, 40),
-          ),
+  Widget _buildAlertForm() => Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Text("Post New Alert", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold)),
+      const SizedBox(height: 12),
+      _buildTextField(_controllers['alertTitle']!, "Alert Title"),
+      const SizedBox(height: 8),
+      _buildTextField(_controllers['alertMsg']!, "Alert Message", maxLines: 2),
+      const SizedBox(height: 8),
+      _buildTextField(_controllers['alertDate']!, "Date Label", hint: "e.g., Today"),
+      const SizedBox(height: 12),
+      ElevatedButton.icon(
+        onPressed: () => _addToCollection('alerts', {
+          'title': _controllers['alertTitle']!.text.trim(),
+          'message': _controllers['alertMsg']!.text.trim(),
+          'date': _controllers['alertDate']!.text.trim(),
+          'type': 'info',
+          'timestamp': FieldValue.serverTimestamp(),
+        }),
+        icon: const Icon(Icons.send, size: 18),
+        label: const Text("POST ALERT"),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.red,
+          foregroundColor: Colors.white,
+          minimumSize: const Size(double.infinity, 40),
         ),
-      ],
-    ),
+      ),
+    ],
   );
 
-  Widget _buildTipForm() => Form(
-    key: GlobalKey<FormState>(),
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text("Post Health Tip", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 12),
-        _buildTextField(_controllers['tipTitle']!, "Tip Title"),
-        const SizedBox(height: 8),
-        _buildTextField(_controllers['tipSubtitle']!, "Tip Description"),
-        const SizedBox(height: 12),
-        ElevatedButton.icon(
-          onPressed: () => _addToCollection('tips', {
-            'title': _controllers['tipTitle']!.text.trim(),
-            'subtitle': _controllers['tipSubtitle']!.text.trim(),
-            'color': 'teal',
-            'timestamp': FieldValue.serverTimestamp(),
-          }),
-          icon: const Icon(Icons.add, size: 18),
-          label: const Text("POST TIP"),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.teal,
-            foregroundColor: Colors.white,
-            minimumSize: const Size(double.infinity, 40),
-          ),
+  Widget _buildTipForm() => Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Text("Post Health Tip", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold)),
+      const SizedBox(height: 12),
+      _buildTextField(_controllers['tipTitle']!, "Tip Title"),
+      const SizedBox(height: 8),
+      _buildTextField(_controllers['tipSubtitle']!, "Tip Description"),
+      const SizedBox(height: 12),
+      ElevatedButton.icon(
+        onPressed: () => _addToCollection('tips', {
+          'title': _controllers['tipTitle']!.text.trim(),
+          'subtitle': _controllers['tipSubtitle']!.text.trim(),
+          'color': 'teal',
+          'timestamp': FieldValue.serverTimestamp(),
+        }),
+        icon: const Icon(Icons.add, size: 18),
+        label: const Text("POST TIP"),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.teal,
+          foregroundColor: Colors.white,
+          minimumSize: const Size(double.infinity, 40),
         ),
-      ],
-    ),
+      ),
+    ],
   );
 
-  Widget _buildProductForm() => Form(
-    key: GlobalKey<FormState>(),
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text("Add Product", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 12),
-        _buildTextField(_controllers['productName']!, "Product Name"),
-        const SizedBox(height: 8),
-        _buildTextField(_controllers['productPrice']!, "Price", keyboardType: TextInputType.number, prefix: "\$"),
-        const SizedBox(height: 8),
-        _buildTextField(_controllers['productDesc']!, "Description", maxLines: 2),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            Expanded(child: _buildTextField(_controllers['productCat']!, "Category")),
-            const SizedBox(width: 8),
-            Expanded(child: _buildTextField(_controllers['productStock']!, "Stock", keyboardType: TextInputType.number)),
-          ],
+  Widget _buildProductForm() => Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Text("Add Product", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold)),
+      const SizedBox(height: 12),
+      _buildTextField(_controllers['productName']!, "Product Name"),
+      const SizedBox(height: 8),
+      _buildTextField(_controllers['productPrice']!, "Price", keyboardType: TextInputType.number, prefix: "\$"),
+      const SizedBox(height: 8),
+      _buildTextField(_controllers['productDesc']!, "Description", maxLines: 2),
+      const SizedBox(height: 8),
+      Row(
+        children: [
+          Expanded(child: _buildTextField(_controllers['productCat']!, "Category")),
+          const SizedBox(width: 8),
+          Expanded(child: _buildTextField(_controllers['productStock']!, "Stock", keyboardType: TextInputType.number)),
+        ],
+      ),
+      const SizedBox(height: 12),
+      ElevatedButton.icon(
+        onPressed: () => _addToCollection('products', {
+          'name': _controllers['productName']!.text.trim(),
+          'price': double.tryParse(_controllers['productPrice']!.text.trim()) ?? 0,
+          'description': _controllers['productDesc']!.text.trim(),
+          'category': _controllers['productCat']!.text.trim(),
+          'stock': int.tryParse(_controllers['productStock']!.text.trim()) ?? 0,
+          'status': 'Available',
+          'createdAt': FieldValue.serverTimestamp(),
+        }),
+        icon: const Icon(Icons.add, size: 18),
+        label: const Text("ADD PRODUCT"),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.green,
+          foregroundColor: Colors.white,
+          minimumSize: const Size(double.infinity, 40),
         ),
-        const SizedBox(height: 12),
-        ElevatedButton.icon(
-          onPressed: () => _addToCollection('products', {
-            'name': _controllers['productName']!.text.trim(),
-            'price': double.tryParse(_controllers['productPrice']!.text.trim()) ?? 0,
-            'description': _controllers['productDesc']!.text.trim(),
-            'category': _controllers['productCat']!.text.trim(),
-            'stock': int.tryParse(_controllers['productStock']!.text.trim()) ?? 0,
-            'status': 'Available',
-            'createdAt': FieldValue.serverTimestamp(),
-          }),
-          icon: const Icon(Icons.add, size: 18),
-          label: const Text("ADD PRODUCT"),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
-            foregroundColor: Colors.white,
-            minimumSize: const Size(double.infinity, 40),
-          ),
-        ),
-      ],
-    ),
+      ),
+    ],
   );
 
   Widget _buildAlertCard(Map<String, dynamic> data, String id) => Card(
     margin: const EdgeInsets.only(bottom: 8),
     child: ListTile(
       dense: true,
-      leading: CircleAvatar(
+      leading: const CircleAvatar(
         radius: 20,
         backgroundColor: Colors.teal,
-        child: const Icon(Icons.notifications, color: Colors.white, size: 20),
+        child: Icon(Icons.notifications, color: Colors.white, size: 20),
       ),
       title: Text(data['title'] ?? '',
           style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 14)),
@@ -506,10 +496,10 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
     margin: const EdgeInsets.only(bottom: 8),
     child: ListTile(
       dense: true,
-      leading: CircleAvatar(
+      leading: const CircleAvatar(
         radius: 20,
         backgroundColor: Colors.teal,
-        child: const Icon(Icons.lightbulb, color: Colors.white, size: 20),
+        child: Icon(Icons.lightbulb, color: Colors.white, size: 20),
       ),
       title: Text(data['title'] ?? '',
           style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 14)),
@@ -594,10 +584,10 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
             return Card(
               margin: const EdgeInsets.only(bottom: 8),
               child: ExpansionTile(
-                leading: CircleAvatar(
+                leading: const CircleAvatar(
                   backgroundColor: Colors.teal,
                   radius: 20,
-                  child: const Icon(Icons.shopping_cart, color: Colors.white, size: 20),
+                  child: Icon(Icons.shopping_cart, color: Colors.white, size: 20),
                 ),
                 title: Text(
                   "Order #${data['orderId'] ?? orders[i].id.substring(0, 8)}",
@@ -695,7 +685,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
     );
   }
 
-  Widget _buildTextField(TextEditingController? c, String label, {
+  Widget _buildTextField(TextEditingController c, String label, {
     int maxLines = 1,
     TextInputType keyboardType = TextInputType.text,
     String? hint,
@@ -705,7 +695,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
       controller: c,
       maxLines: maxLines,
       keyboardType: keyboardType,
-      validator: (v) => (v == null || v.isEmpty) ? "Required" : null,
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
