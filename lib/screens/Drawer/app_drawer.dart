@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../Admin/screens/adminDashboard_screen.dart';
-import '../../E-commers Screen/navScreens/profile_screen.dart';
 import '../../auth/profileScreen.dart';
 import 'notification_screen.dart';
 

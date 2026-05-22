@@ -62,37 +62,57 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
 
     try {
       final firestore = FirebaseFirestore.instance;
-      // Search by Batch
-      final batchQuery = await firestore
-          .collection('medicines')
-          .where('batchNumberLower', isEqualTo: searchLower)
-          .get();
-      // Search by Brand Name (Prefix)
-      final nameQuery = await firestore
-          .collection('medicines')
-          .where('brandNameLower', isGreaterThanOrEqualTo: searchLower)
-          .where('brandNameLower', isLessThan: searchLower + '\uf8ff')
-          .get();
+      final collection = firestore.collection('medicines');
 
+      // Run all queries concurrently for better performance
+      final results = await Future.wait([
+        // 1. Search by Batch (Exact)
+        collection.where('batchNumberLower', isEqualTo: searchLower).get(),
+
+        // 2. Search by Brand Name (Prefix)
+        collection
+            .where('brandNameLower', isGreaterThanOrEqualTo: searchLower)
+            .where('brandNameLower', isLessThan: searchLower + '\uf8ff')
+            .get(),
+
+        // 3. Search by Generic Name (Prefix) - NEW
+        collection
+            .where('genericNameLower', isGreaterThanOrEqualTo: searchLower)
+            .where('genericNameLower', isLessThan: searchLower + '\uf8ff')
+            .get(),
+      ]);
+
+      final batchQuery = results[0];
+      final nameQuery = results[1];
+      final genericQuery = results[2];
+
+      // Merge results, Map prevents duplicates based on doc.id
       final Map<String, DocumentSnapshot> uniqueDocs = {};
       for (var doc in batchQuery.docs) uniqueDocs[doc.id] = doc;
       for (var doc in nameQuery.docs) uniqueDocs[doc.id] = doc;
+      for (var doc in genericQuery.docs) uniqueDocs[doc.id] = doc;
 
-      final results = uniqueDocs.values.toList();
+      final mergedResults = uniqueDocs.values.toList();
 
-      if (results.isEmpty) {
+      // Always check if the widget is still mounted after an async gap
+      if (!mounted) return;
+
+      if (mergedResults.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("No medicine found for '$query'")));
-      } else if (results.length == 1) {
-        _navigateToResult(results.first.data() as Map<String, dynamic>);
+      } else if (mergedResults.length == 1) {
+        _navigateToResult(mergedResults.first.data() as Map<String, dynamic>);
       } else {
-        _showSelectionSheet(results);
+        _showSelectionSheet(mergedResults);
       }
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("Search Error: $e")));
     } finally {
-      setState(() => _isSearching = false);
+      if (mounted) {
+        setState(() => _isSearching = false);
+      }
     }
   }
 

@@ -1,9 +1,8 @@
 // lib/main.dart
 import 'package:drugsuremva/Admin/screens/adminDashboard_screen.dart';
-import 'package:drugsuremva/E-commers%20Screen/E_HomeScreen.dart';
-import 'package:drugsuremva/E-commers%20Screen/providers/user_provider_screen.dart';
 import 'package:drugsuremva/auth/AdminAccount.dart';
 import 'package:drugsuremva/auth/createAccount.dart';
+import 'package:drugsuremva/drugsure_ecommerce/screens/medicine_store_screen.dart';
 import 'package:drugsuremva/screens/OurServices_screen/doctor_consultancy/screens/doctor_list_screen.dart';
 import 'package:drugsuremva/screens/mainhomeScreen.dart';
 import 'package:drugsuremva/auth/login.dart';
@@ -14,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'auth/splashScreen.dart';
+import 'drugsure_ecommerce/providers/cart_provider.dart';
+import 'drugsure_ecommerce/providers/user_provider_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +30,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => WishlistProvider()),
       ],
       child: MaterialApp(
         title: 'Medicine Validation App',
@@ -38,7 +41,7 @@ class MyApp extends StatelessWidget {
         routes: {
           "/login": (context) => Login(),
           "/signup": (context) => Createaccount(),
-          "ehome": (context) => EHomescreen(),
+          "ehome": (context) => MedicineStoreScreen(),
           "/mainhomescreen": (context) => Homescreen(),
           "/doctor-list": (context) => DoctorListScreen(),
           "/createAdmin" :(context) => CreateAdminAccount(),
