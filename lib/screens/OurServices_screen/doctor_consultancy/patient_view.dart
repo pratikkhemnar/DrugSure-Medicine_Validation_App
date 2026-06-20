@@ -1,7 +1,7 @@
 // file: lib/consultancy/patient_view.dart
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'doctor_consultancy/consultancy_service.dart';
+import 'consultancy_service.dart';
 
 
 class PatientConsoleView extends StatelessWidget {

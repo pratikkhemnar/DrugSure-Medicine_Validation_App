@@ -1,6 +1,6 @@
 // file: lib/consultancy/consultancy_screen.dart
 import 'package:flutter/material.dart';
-import '../patient_view.dart';
+import 'patient_view.dart';
 import 'doctor_view.dart';
 
 class DoctorConsultancySystem extends StatefulWidget {
