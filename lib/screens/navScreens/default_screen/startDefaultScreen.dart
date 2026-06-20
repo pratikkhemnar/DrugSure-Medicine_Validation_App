@@ -11,6 +11,7 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../../Drawer/app_drawer.dart';
 import '../../Drawer/notification_screen.dart';
 import '../../OurServices_screen/Cosmetics/cosmeticsscreen.dart';
+import '../../OurServices_screen/doctor_consultancy/doctor_consultancy_system.dart';
 import '../../OurServices_screen/doctor_consultancy/screens/doctor_list_screen.dart';
 import '../../quick_Actions_Screens/barcodes_screen/result_info_screen.dart';
 import '../../quick_Actions_Screens/symptom_checker_screen.dart';
@@ -595,7 +596,7 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
         scrollDirection: Axis.horizontal,
         children: [
           _buildOurServices("Consult", "Consult doctors online • 24x7",
-              Icons.phone_in_talk, Colors.teal, context, DoctorListScreen()),
+              Icons.phone_in_talk, Colors.teal, context, DoctorConsultancySystem()),
           _buildOurServices("Cosmetics", "For skin & beauty care", Icons.face,
               Colors.pinkAccent, context,  CosmeticsScreen()),
           _buildOurServices("Health Service", "Tests • Home Care", Icons.medical_services, Colors.blue, context, HealthInformationPage()),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -18,22 +19,13 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
   bool isListening = false;
   bool isSpeaking = false;
 
-  final String apiKey = "AIzaSyB-c82jXIzMDLxIW41gh0qFKIVqXC2qIh8";
-
-  late GenerativeModel model;
+  // ⚠️ WARNING: It is highly recommended to store API keys in an .env file
+  // rather than hardcoding them in production apps.
+  final String apiKey = "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";
 
   @override
   void initState() {
     super.initState();
-
-    model = GenerativeModel(
-      model: 'gemini-2.0-flash',
-      apiKey: apiKey,
-      systemInstruction: Content.system(
-        "You are a medical symptom checker. Never prescribe medicines.",
-      ),
-    );
-
     tts.setCompletionHandler(() {
       setState(() => isSpeaking = false);
     });
@@ -77,18 +69,47 @@ Provide:
 """;
 
     try {
-      final response = await model.generateContent([
-        Content.text(prompt),
-      ]);
+      final response = await http.post(
+        Uri.parse('https://api.groq.com/openai/v1/chat/completions'),
+        headers: {
+          'Authorization': 'Bearer $apiKey',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "model": "llama-3.3-70b-versatile", // Using Groq's fast LLaMA 3.3 model
+          "messages": [
+            {
+              "role": "system",
+              "content": "You are a medical symptom checker. Never prescribe medicines."
+            },
+            {
+              "role": "user",
+              "content": prompt
+            }
+          ],
+          "temperature": 0.5,
+          "max_tokens": 1024,
+        }),
+      );
 
-      setState(() {
-        result = response.text ?? "No response. Try again.";
-      });
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final replyText = data['choices'][0]['message']['content'];
 
-      speakText(result); // speak result
+        setState(() {
+          result = replyText.trim();
+        });
+
+        speakText(result); // speak result
+      } else {
+        final errorData = jsonDecode(response.body);
+        setState(() {
+          result = "⚠ API Error: ${errorData['error']['message'] ?? response.statusCode}";
+        });
+      }
     } catch (e) {
       setState(() {
-        result = "⚠ Error: $e";
+        result = "⚠ Network Error: $e";
       });
     }
 
@@ -122,6 +143,7 @@ Provide:
   void dispose() {
     stopSpeaking();
     speech.stop();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -129,7 +151,6 @@ Provide:
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -157,15 +178,12 @@ Provide:
             ),
         ],
       ),
-
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             SizedBox(height: 10),
-
             Text(
               "How are you feeling?",
               style: TextStyle(
@@ -174,9 +192,7 @@ Provide:
                 color: Colors.teal[900],
               ),
             ),
-
             SizedBox(height: 6),
-
             Text(
               "Describe your symptoms for AI analysis",
               style: TextStyle(
@@ -184,9 +200,7 @@ Provide:
                 color: Colors.grey[600],
               ),
             ),
-
             SizedBox(height: 24),
-
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -204,7 +218,6 @@ Provide:
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-
                     TextField(
                       controller: _controller,
                       maxLines: 4,
@@ -216,12 +229,9 @@ Provide:
                         contentPadding: EdgeInsets.zero,
                       ),
                     ),
-
                     SizedBox(height: 12),
-
                     Row(
                       children: [
-
                         Container(
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
@@ -238,9 +248,7 @@ Provide:
                             ),
                           ),
                         ),
-
                         SizedBox(width: 8),
-
                         if (isListening)
                           Text(
                             "Listening...",
@@ -249,9 +257,7 @@ Provide:
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-
                         Spacer(),
-
                         Text(
                           "${_controller.text.length} chars",
                           style: TextStyle(
@@ -265,9 +271,7 @@ Provide:
                 ),
               ),
             ),
-
             SizedBox(height: 20),
-
             Container(
               width: double.infinity,
               height: 56,
@@ -325,16 +329,13 @@ Provide:
                 ),
               ),
             ),
-
             SizedBox(height: 20),
-
             if (loading)
               _buildLoadingIndicator()
             else if (result.isEmpty)
               _buildEmptyState()
             else
               _buildResultCard(),
-
             SizedBox(height: 30),
           ],
         ),
@@ -413,9 +414,7 @@ Provide:
               )
             ],
           ),
-
           SizedBox(height: 14),
-
           Text(
             result,
             style: TextStyle(
@@ -424,9 +423,7 @@ Provide:
               color: Colors.grey[800],
             ),
           ),
-
           SizedBox(height: 16),
-
           if (isSpeaking)
             Center(
               child: ElevatedButton.icon(
@@ -441,9 +438,7 @@ Provide:
                 ),
               ),
             ),
-
           SizedBox(height: 12),
-
           Container(
             padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
