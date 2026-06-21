@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:drugsuremva/screens/Drawer/setting/setting.dart';
 
 class ProfileScreens extends StatefulWidget {
   const ProfileScreens({super.key});
@@ -1135,133 +1136,7 @@ class _AddressScreenState extends State<AddressScreen> {
   }
 }
 
-// ===================== SETTINGS SCREEN =====================
-class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
-
-  @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends State<SettingsScreen> {
-  bool notificationsEnabled = true;
-  bool darkModeEnabled = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey.shade100,
-      appBar: AppBar(
-        title: Text("Settings", style: GoogleFonts.poppins()),
-        backgroundColor: Colors.teal,
-        foregroundColor: Colors.white,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _buildSettingsSection(
-            title: "Preferences",
-            children: [
-              SwitchListTile(
-                title: Text("Push Notifications", style: GoogleFonts.poppins()),
-                subtitle: Text("Receive order updates and offers", style: GoogleFonts.poppins(fontSize: 12)),
-                value: notificationsEnabled,
-                onChanged: (value) {
-                  setState(() => notificationsEnabled = value);
-                  // Save to shared preferences or Firestore
-                },
-                activeColor: Colors.teal,
-              ),
-              SwitchListTile(
-                title: Text("Dark Mode", style: GoogleFonts.poppins()),
-                subtitle: Text("Enable dark theme", style: GoogleFonts.poppins(fontSize: 12)),
-                value: darkModeEnabled,
-                onChanged: (value) {
-                  setState(() => darkModeEnabled = value);
-                  // Implement dark mode logic
-                },
-                activeColor: Colors.teal,
-              ),
-            ],
-          ),
-          _buildSettingsSection(
-            title: "Privacy & Security",
-            children: [
-              ListTile(
-                leading: const Icon(Icons.lock_outline),
-                title: Text("Change Password", style: GoogleFonts.poppins()),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {
-                  // Navigate to change password screen
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Change password feature coming soon")),
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.privacy_tip_outlined),
-                title: Text("Privacy Policy", style: GoogleFonts.poppins()),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {
-                  // Show privacy policy
-                },
-              ),
-            ],
-          ),
-          _buildSettingsSection(
-            title: "Data Management",
-            children: [
-              ListTile(
-                leading: const Icon(Icons.download_outlined),
-                title: Text("Export Data", style: GoogleFonts.poppins()),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Export data feature coming soon")),
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.clear_all),
-                title: Text("Clear Cache", style: GoogleFonts.poppins()),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Cache cleared")),
-                  );
-                },
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSettingsSection({required String title, required List<Widget> children}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          child: Text(
-            title,
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.teal,
-            ),
-          ),
-        ),
-        Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          child: Column(children: children),
-        ),
-        const SizedBox(height: 16),
-      ],
-    );
-  }
-}
+// SettingsScreen is now imported from drawer/setting.dart
 
 // ===================== HELP & SUPPORT SCREEN =====================
 class HelpSupportScreen extends StatefulWidget {

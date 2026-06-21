@@ -600,7 +600,20 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
                       .map((s) => DropdownMenuItem(value: s, child: Text(s, style: const TextStyle(fontSize: 12))))
                       .toList(),
                   onChanged: (newStatus) async {
-                    await FirebaseFirestore.instance.collection('orders').doc(orders[i].id).update({'status': newStatus});
+                    final statusIndexMap = {
+                      'Pending': 0,
+                      'Processing': 1,
+                      'Shipped': 2,
+                      'Delivered': 4,
+                      'Cancelled': 5,
+                    };
+                    await FirebaseFirestore.instance
+                        .collection('orders')
+                        .doc(orders[i].id)
+                        .update({
+                          'status': newStatus,
+                          'statusIndex': statusIndexMap[newStatus] ?? 0,
+                        });
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text("Order updated"), duration: Duration(seconds: 1)),

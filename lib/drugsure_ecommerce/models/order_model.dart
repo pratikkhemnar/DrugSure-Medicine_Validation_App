@@ -2,6 +2,7 @@
 // FILE: models/cart_model.dart
 // ============================================================
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'medicine_model.dart';
 
 class CartItem {
@@ -100,7 +101,7 @@ class OrderItem {
 
   factory OrderItem.fromJson(Map<String, dynamic> json) => OrderItem(
         medicineId: json['medicineId'] ?? '',
-        medicineName: json['medicineName'] ?? '',
+        medicineName: json['medicineName'] ?? json['name'] ?? '',
         medicineBrand: json['medicineBrand'] ?? '',
         price: (json['price'] ?? 0).toDouble(),
         quantity: json['quantity'] ?? 1,
@@ -114,6 +115,7 @@ class OrderItem {
         'price': price,
         'quantity': quantity,
         'totalPrice': totalPrice,
+        'name': medicineName, // For Admin Dashboard list rendering compatibility
       };
 }
 
@@ -174,21 +176,55 @@ class Order {
     this.estimatedDelivery,
   });
 
+  static OrderStatus _parseStatus(Map<String, dynamic> json) {
+    if (json['status'] != null) {
+      final statusStr = json['status'].toString().toLowerCase();
+      switch (statusStr) {
+        case 'pending':
+        case 'placed':
+        case 'order placed':
+          return OrderStatus.placed;
+        case 'processing':
+        case 'confirmed':
+          return OrderStatus.confirmed;
+        case 'shipped':
+          return OrderStatus.shipped;
+        case 'out for delivery':
+        case 'outfordelivery':
+          return OrderStatus.outForDelivery;
+        case 'delivered':
+          return OrderStatus.delivered;
+        case 'cancelled':
+          return OrderStatus.cancelled;
+      }
+    }
+    if (json['statusIndex'] is int) {
+      return OrderStatus.values[json['statusIndex']];
+    }
+    return OrderStatus.placed;
+  }
+
   factory Order.fromJson(Map<String, dynamic> json) => Order(
-        id: json['id'] ?? '',
+        id: json['id'] ?? json['orderId'] ?? '',
         userId: json['userId'] ?? '',
         items: (json['items'] as List? ?? [])
             .map((i) => OrderItem.fromJson(i))
             .toList(),
         deliveryAddress: Address.fromJson(json['deliveryAddress'] ?? {}),
-        subtotal: (json['subtotal'] ?? 0).toDouble(),
+        subtotal: (json['subtotal'] ?? json['totalAmount'] ?? 0).toDouble(),
         discount: (json['discount'] ?? 0).toDouble(),
         deliveryCharge: (json['deliveryCharge'] ?? 0).toDouble(),
-        total: (json['total'] ?? 0).toDouble(),
+        total: (json['total'] ?? json['totalAmount'] ?? 0).toDouble(),
         paymentMethod: json['paymentMethod'] ?? '',
         paymentId: json['paymentId'] ?? '',
-        status: OrderStatus.values[json['statusIndex'] ?? 0],
-        createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
+        status: _parseStatus(json),
+        createdAt: json['orderDate'] != null
+            ? (json['orderDate'] is Timestamp
+                ? (json['orderDate'] as Timestamp).toDate()
+                : DateTime.parse(json['orderDate']))
+            : (json['createdAt'] != null
+                ? DateTime.parse(json['createdAt'])
+                : DateTime.now()),
         estimatedDelivery: json['estimatedDelivery'] != null
             ? DateTime.parse(json['estimatedDelivery'])
             : null,
@@ -196,17 +232,24 @@ class Order {
 
   Map<String, dynamic> toJson() => {
         'id': id,
+        'orderId': id, // Admin and profile dashboard compatibility
         'userId': userId,
         'items': items.map((i) => i.toJson()).toList(),
         'deliveryAddress': deliveryAddress.toJson(),
+        'shippingAddress': {
+          'address': deliveryAddress.displayAddress,
+        }, // Admin Dashboard compatibility
         'subtotal': subtotal,
         'discount': discount,
         'deliveryCharge': deliveryCharge,
         'total': total,
+        'totalAmount': total, // Admin and profile dashboard compatibility
         'paymentMethod': paymentMethod,
         'paymentId': paymentId,
         'statusIndex': status.index,
+        'status': status.displayName, // Admin and profile dashboard compatibility
         'createdAt': createdAt.toIso8601String(),
+        'orderDate': Timestamp.fromDate(createdAt), // Admin and profile dashboard sorting
         'estimatedDelivery': estimatedDelivery?.toIso8601String(),
       };
 }

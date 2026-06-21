@@ -3,7 +3,9 @@ import 'package:drugsuremva/auth/login.dart';
 import 'package:drugsuremva/screens/Drawer/appAboutScreen.dart';
 import 'package:drugsuremva/screens/Drawer/supportScreen.dart';
 import 'package:drugsuremva/screens/navScreens/default_screen/startDefaultScreen.dart';
+import 'package:drugsuremva/screens/navScreens/report_screen/adverse_event_report_screen.dart';
 import 'package:drugsuremva/under_working.dart';
+import 'package:drugsuremva/screens/Drawer/setting/setting.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:share_plus/share_plus.dart';
@@ -59,15 +61,15 @@ class AppDrawer extends StatelessWidget {
 
   Widget _buildMenuItems(BuildContext context) {
     final menuItems = [
-      _MenuItem(Icons.admin_panel_settings, "Admin Pannel",  AdminDashboardScreen()),
+
       _MenuItem(Icons.home_filled, "Home", const StartDefaultScreen()),
       _MenuItem(Icons.headset_mic, "Support", const SupportScreen()),
       _MenuItem(Icons.notifications, "Notifications", const NotificationScreen()),
-      _MenuItem(Icons.settings, "Settings", const UnderWorking(),
+      _MenuItem(Icons.report, "Report", AdverseEventReportScreen()),
+      _MenuItem(Icons.settings, "Settings", const SettingsScreen(),
           trailing: Icons.dark_mode_rounded),
       _MenuItem(Icons.share, "Share App", null, isAction: true),
       _MenuItem(Icons.info_rounded, "About", const AboutScreen()),
-      _MenuItem(Icons.add, "Add Medicine",  AddMedicineScreen()),
 
 
     ];

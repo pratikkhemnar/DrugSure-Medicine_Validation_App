@@ -409,9 +409,9 @@ class AboutScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          _buildContactItem(Icons.email_outlined, "support@drugsure.com"),
-          _buildContactItem(Icons.language_outlined, "www.drugsure.com"),
-          _buildContactItem(Icons.phone_outlined, "+91-XXXXXXXXXX"),
+          _buildContactItem(Icons.email_outlined, "support@drugsure.in"),
+          _buildContactItem(Icons.language_outlined, "www.drugsure.in"),
+          _buildContactItem(Icons.phone_outlined, "+91-9689109218"),
           _buildContactItem(Icons.location_on_outlined, "India"),
         ],
       ),
@@ -448,13 +448,13 @@ class AboutScreen extends StatelessWidget {
           children: [
             _buildSocialButton(Icons.facebook, Colors.blue.shade800),
             _buildSocialButton(Icons.email, Colors.red.shade600),
-            _buildSocialButton(Icons.whatshot, Colors.blue.shade700),
+            _buildSocialButton(Icons.chat, Colors.blue.shade700),
 
           ],
         ),
         const SizedBox(height: 20),
         Text(
-          "© 2025 DrugSure. All Rights Reserved.",
+          "© 2025 DrugSure",
           style: TextStyle(
             color: Colors.grey.shade600,
             fontSize: 14,

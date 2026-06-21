@@ -17,7 +17,6 @@
 
 import 'package:flutter/foundation.dart';
 import '../models/medicine_model.dart';
-import '../models/order_model.dart';
 
 class CartItem {
   final Medicine medicine;

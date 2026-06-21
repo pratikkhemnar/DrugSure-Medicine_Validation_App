@@ -14,6 +14,7 @@ import '../providers/cart_provider.dart';
 import '../services/medicine_service.dart';
 import '../widgets/medicine_card.dart';
 import 'cart_screen.dart';
+import 'orders_screen.dart';
 import 'product_detail_screen.dart';
 
 class MedicineStoreScreen extends StatefulWidget {
@@ -109,6 +110,12 @@ class _MedicineStoreScreenState extends State<MedicineStoreScreen> {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.receipt_long_outlined, color: Colors.white),
+            tooltip: 'My Orders',
+            onPressed: () => Navigator.push(
+              context, MaterialPageRoute(builder: (_) => const OrdersScreen())),
+          ),
           Stack(
             children: [
               IconButton(

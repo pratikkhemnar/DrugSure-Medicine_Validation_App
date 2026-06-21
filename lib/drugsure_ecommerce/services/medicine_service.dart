@@ -15,6 +15,7 @@
 // ============================================================
 
 import 'package:cloud_firestore/cloud_firestore.dart' hide Order;
+import 'package:flutter/cupertino.dart';
 import '../models/medicine_model.dart';
 import '../models/order_model.dart';
 
@@ -117,10 +118,9 @@ class OrderService {
     required double subtotal,
     required double discount,
     required double deliveryCharge,
-    required double total,
+    required    double total,
   }) async {
     final orderId = 'ORD${DateTime.now().millisecondsSinceEpoch}';
-
     final order = Order(
       id: orderId,
       userId: userId,
@@ -144,11 +144,18 @@ class OrderService {
       estimatedDelivery: DateTime.now().add(const Duration(days: 3)),
     );
 
-    // SAVE TO FIRESTORE (uncomment when ready)
-    // await _db.collection(_ordersCollection).doc(orderId).set(order.toJson());
-    // Also update user's order history:
-    // await _db.collection(_usersCollection).doc(userId)
-    //     .collection('orders').doc(orderId).set({'orderId': orderId, 'createdAt': order.createdAt});
+    // SAVE TO FIRESTORE
+    try {
+      await _db.collection(_ordersCollection).doc(orderId).set(order.toJson());
+      // Also update user's order history
+      await _db.collection(_usersCollection).doc(userId)
+          .collection('orders').doc(orderId).set({
+            'orderId': orderId, 
+            'createdAt': Timestamp.fromDate(order.createdAt),
+          });
+    } catch (e) {
+      debugPrint("Error writing order to Firestore: $e");
+    }
 
     // Simulate API delay
     await Future.delayed(const Duration(seconds: 1));
@@ -157,18 +164,39 @@ class OrderService {
 
   /// Get all orders for a user
   Future<List<Order>> getUserOrders(String userId) async {
-    // FIRESTORE:
-    // final snapshot = await _db.collection(_ordersCollection)
-    //     .where('userId', isEqualTo: userId)
-    //     .orderBy('createdAt', descending: true)
-    //     .get();
-    // return snapshot.docs.map((doc) => Order.fromJson(doc.data())).toList();
+    try {
+      final snapshot = await _db.collection(_ordersCollection)
+          .where('userId', isEqualTo: userId)
+          .orderBy('orderDate', descending: true)
+          .get();
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs.map((doc) {
+          final data = doc.data();
+          data['id'] = doc.id;
+          return Order.fromJson(data);
+        }).toList();
+      }
+    } catch (e) {
+      debugPrint("Error fetching user orders: $e (trying fallback memory sort)");
+      try {
+        final snapshot = await _db.collection(_ordersCollection)
+            .where('userId', isEqualTo: userId)
+            .get();
+        if (snapshot.docs.isNotEmpty) {
+          final orders = snapshot.docs.map((doc) {
+            final data = doc.data();
+            data['id'] = doc.id;
+            return Order.fromJson(data);
+          }).toList();
+          orders.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          return orders;
+        }
+      } catch (err) {
+        debugPrint("Fallback fetch failed: $err");
+      }
+    }
 
-    // REST API: GET YOUR_API_BASE_URL/orders?userId=userId
-
-    await Future.delayed(const Duration(milliseconds: 600));
-    // Return dummy orders for testing
-    return _getDummyOrders(userId);
+    return [];
   }
 
   List<Order> _getDummyOrders(String userId) {

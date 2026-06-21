@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drugsuremva/screens/OurServices_screen/Health%20Assesment/health_risk_assessment_screen.dart';
 import 'package:drugsuremva/screens/quick_Actions_Screens/barcodes_screen/screens/qr_scanner_screen.dart';
 import 'package:drugsuremva/under_working.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,13 +11,11 @@ import 'package:share_plus/share_plus.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../../Drawer/app_drawer.dart';
 import '../../Drawer/notification_screen.dart';
-import '../../OurServices_screen/Cosmetics/cosmeticsscreen.dart';
 import '../../OurServices_screen/doctor_consultancy/doctor_consultancy_system.dart';
-import '../../OurServices_screen/doctor_consultancy/screens/doctor_list_screen.dart';
 import '../../quick_Actions_Screens/barcodes_screen/result_info_screen.dart';
-import '../../quick_Actions_Screens/symptom_checker_screen.dart';
-import '../../OurServices_screen/healthInfoScreen.dart';
-import '../../quick_Actions_Screens/nearbypharma.dart';
+import '../../quick_Actions_Screens/Symptom_Checker/symptom_checker_screen.dart';
+import '../../OurServices_screen/Health_Tips/healthInfoScreen.dart';
+import '../../quick_Actions_Screens/NearByPharma/nearbypharma.dart';
 
 
 class StartDefaultScreen extends StatefulWidget {
@@ -597,9 +596,9 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
         children: [
           _buildOurServices("Consult", "Consult doctors online • 24x7",
               Icons.phone_in_talk, Colors.teal, context, DoctorConsultancySystem()),
-          _buildOurServices("Cosmetics", "For skin & beauty care", Icons.face,
-              Colors.pinkAccent, context,  CosmeticsScreen()),
-          _buildOurServices("Health Service", "Tests • Home Care", Icons.medical_services, Colors.blue, context, HealthInformationPage()),
+          _buildOurServices("Health Assessment", "Check your health risk & BMI", Icons.health_and_safety,
+              Colors.redAccent, context,  HealthRiskAssessmentScreen()),
+          _buildOurServices("Health Tips", "Tests • Home Care", Icons.medical_services, Colors.blue, context, HealthInformationPage()),
         ],
       ),
     );

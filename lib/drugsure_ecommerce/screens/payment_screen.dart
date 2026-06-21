@@ -11,6 +11,7 @@
 // ============================================================
 
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import '../models/order_model.dart';
@@ -96,13 +97,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   Future<void> _createOrder({String paymentId = ''}) async {
     final cart = context.read<CartProvider>();
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please log in to place an order.'), backgroundColor: Colors.red),
+      );
+      return;
+    }
     setState(() => _isProcessing = true);
 
     try {
-      // TODO: Replace 'user123' with actual userId from auth
-      // Example: final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
       final order = await _orderService.placeOrder(
-        userId: 'user123',
+        userId: currentUser.uid,
         cartItems: cart.items.map((ci) => CartItem(
           medicine: ci.medicine,
           quantity: ci.quantity,
