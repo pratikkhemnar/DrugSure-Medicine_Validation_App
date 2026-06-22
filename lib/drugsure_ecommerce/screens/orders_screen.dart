@@ -382,6 +382,9 @@ class _OrderCard extends StatelessWidget {
       case OrderStatus.outForDelivery:  return Colors.deepOrange;
       case OrderStatus.delivered:       return Colors.green;
       case OrderStatus.cancelled:       return Colors.red;
+      case OrderStatus.pending:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
   }
 

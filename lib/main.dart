@@ -1,16 +1,13 @@
 // lib/main.dart
-import 'package:drugsuremva/Admin/screens/adminDashboard_screen.dart';
 import 'package:drugsuremva/auth/AdminAccount.dart';
 import 'package:drugsuremva/auth/createAccount.dart';
 import 'package:drugsuremva/drugsure_ecommerce/screens/medicine_store_screen.dart';
 import 'package:drugsuremva/screens/mainhomeScreen.dart';
 import 'package:drugsuremva/auth/login.dart';
-import 'package:drugsuremva/auth/auth_wrapper.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'admin_dashboard/admin_dashboard_screen.dart';
 import 'auth/splashScreen.dart';
 import 'drugsure_ecommerce/providers/cart_provider.dart';
 import 'drugsure_ecommerce/providers/user_provider_screen.dart';
