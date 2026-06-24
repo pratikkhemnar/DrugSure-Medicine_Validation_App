@@ -4,6 +4,7 @@ import 'package:drugsuremva/auth/createAccount.dart';
 import 'package:drugsuremva/drugsure_ecommerce/screens/medicine_store_screen.dart';
 import 'package:drugsuremva/screens/mainhomeScreen.dart';
 import 'package:drugsuremva/auth/login.dart';
+import 'package:drugsuremva/screens/medicine_verify_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
               "/mainhomescreen": (context) => Homescreen(),
               "/createAdmin" :(context) => CreateAdminAccount(),
               "/adminDashboard" : (context) => AdminDashboardScreen(),
+              "/verify" : (context) => const MedicineVerifyScreen(),
               // add other routes here as needed
             },
             debugShowCheckedModeBanner: false,

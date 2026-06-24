@@ -166,23 +166,28 @@ class _ShimmerListState extends State<ShimmerList> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: const EdgeInsets.all(8),
-      itemCount: widget.itemCount,
-      itemBuilder: (context, i) => AnimatedBuilder(
-        animation: _controller,
-        builder: (context, _) {
-          final opacity = 0.4 + 0.3 * (1 - (_controller.value - 0.5).abs() * 2);
-          return Container(
-            margin: const EdgeInsets.only(bottom: 8),
-            height: 72,
-            decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(opacity * 0.3),
-              borderRadius: DashTheme.radiusSm,
+    // Use Column instead of ListView so ShimmerList can safely be placed
+    // inside a Column > SingleChildScrollView without needing bounded height.
+    // ListView inside Column = unbounded height constraint → blank screen.
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) {
+        final opacity = 0.4 + 0.3 * (1 - (_controller.value - 0.5).abs() * 2).clamp(-1.0, 1.0);
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(
+            widget.itemCount,
+            (_) => Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              height: 72,
+              decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(opacity.clamp(0.0, 1.0) * 0.3),
+                borderRadius: DashTheme.radiusSm,
+              ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

@@ -178,10 +178,12 @@ class OrdersScreen extends StatelessWidget {
       body: uid.isEmpty
           ? _emptyState('Please log in to view your orders.')
           : StreamBuilder<QuerySnapshot>(
+              // Only filter by userId — no .orderBy() here because combining
+              // .where() + .orderBy() on different fields requires a Firestore
+              // composite index. We sort client-side instead.
               stream: FirebaseFirestore.instance
                   .collection('orders')
                   .where('userId', isEqualTo: uid)
-                  .orderBy('orderDate', descending: true)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -194,10 +196,12 @@ class OrdersScreen extends StatelessWidget {
                 if (docs.isEmpty) return _emptyState('No orders yet.\nStart shopping to place your first order!');
 
                 final orders = docs.map((doc) {
-                  final data = doc.data() as Map<String, dynamic>;
+                  final data = Map<String, dynamic>.from(doc.data() as Map);
                   data['id'] = doc.id;
                   return Order.fromJson(data);
-                }).toList();
+                }).toList()
+                  // Sort newest first client-side (avoids composite index requirement)
+                  ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
                 return RefreshIndicator(
                   onRefresh: () async {},
@@ -382,9 +386,7 @@ class _OrderCard extends StatelessWidget {
       case OrderStatus.outForDelivery:  return Colors.deepOrange;
       case OrderStatus.delivered:       return Colors.green;
       case OrderStatus.cancelled:       return Colors.red;
-      case OrderStatus.pending:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+      case OrderStatus.pending:         return Colors.grey;
     }
   }
 

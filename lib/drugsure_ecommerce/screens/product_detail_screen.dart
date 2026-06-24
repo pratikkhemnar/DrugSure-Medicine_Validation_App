@@ -7,6 +7,9 @@ import 'package:provider/provider.dart';
 import '../models/medicine_model.dart';
 import '../providers/cart_provider.dart';
 import 'cart_screen.dart';
+import '../../../screens/medicine_verify_screen.dart';
+import '../../../blockchain/polygon_service.dart';
+import '../../../blockchain/medicine_verification_result.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final Medicine medicine;
@@ -20,6 +23,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   bool _isWishlisted = false;
+
+  // ── Blockchain verification state ────────────────────────────────────────
+  bool _isVerifying = false;
+  MedicineVerificationResult? _quickVerifyResult;
 
   @override
   void initState() {
@@ -191,6 +198,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                       ),
                     ],
                   ),
+                  const SizedBox(height: 20),
+
+                  // ── Blockchain Verification Banner ────────────────────────
+                  _buildBlockchainVerifyBanner(med),
                   const SizedBox(height: 20),
 
                   // Tabs
@@ -394,6 +405,92 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                 style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
           ),
         ],
+      ),
+    );
+  }
+
+  // ── Blockchain Verify Banner ──────────────────────────────────────────────
+  Widget _buildBlockchainVerifyBanner(Medicine med) {
+    // Use medicine ID as batch ID (or replace with med.batchId if available)
+    final batchId = 'DS-${med.id.toUpperCase()}';
+
+    return GestureDetector(
+      onTap: () async {
+        if (_isVerifying) return;
+        // Navigate to full verify screen with batch ID pre-filled
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => MedicineVerifyScreen(prefilledBatchId: batchId),
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF1A0A3E), Color(0xFF0D0D1A)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: const Color(0xFF7B3FE4).withOpacity(0.4)),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF7B3FE4).withOpacity(0.15),
+              blurRadius: 16,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 42, height: 42,
+              decoration: BoxDecoration(
+                color: const Color(0xFF7B3FE4).withOpacity(0.15),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: const Color(0xFF7B3FE4).withOpacity(0.4)),
+              ),
+              child: const Icon(Icons.verified_user, color: Color(0xFF7B3FE4), size: 22),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Verify on Blockchain',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'Confirm this medicine is genuine using Polygon',
+                    style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 12),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: const Color(0xFF7B3FE4),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Row(
+                children: [
+                  Icon(Icons.hub_outlined, color: Colors.white, size: 12),
+                  SizedBox(width: 4),
+                  Text('Verify', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

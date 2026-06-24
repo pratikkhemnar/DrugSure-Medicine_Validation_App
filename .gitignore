@@ -48,3 +48,7 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 backend_skin_disease/ 
+
+# Blockchain secrets — NEVER commit private keys
+blockchain/.env
+backend/.env

@@ -165,37 +165,22 @@ class OrderService {
   /// Get all orders for a user
   Future<List<Order>> getUserOrders(String userId) async {
     try {
+      // No .orderBy() to avoid composite index requirement — sort client-side.
       final snapshot = await _db.collection(_ordersCollection)
           .where('userId', isEqualTo: userId)
-          .orderBy('orderDate', descending: true)
           .get();
       if (snapshot.docs.isNotEmpty) {
-        return snapshot.docs.map((doc) {
-          final data = doc.data();
+        final orders = snapshot.docs.map((doc) {
+          final data = Map<String, dynamic>.from(doc.data());
           data['id'] = doc.id;
           return Order.fromJson(data);
-        }).toList();
+        }).toList()
+          ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        return orders;
       }
     } catch (e) {
-      debugPrint("Error fetching user orders: $e (trying fallback memory sort)");
-      try {
-        final snapshot = await _db.collection(_ordersCollection)
-            .where('userId', isEqualTo: userId)
-            .get();
-        if (snapshot.docs.isNotEmpty) {
-          final orders = snapshot.docs.map((doc) {
-            final data = doc.data();
-            data['id'] = doc.id;
-            return Order.fromJson(data);
-          }).toList();
-          orders.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-          return orders;
-        }
-      } catch (err) {
-        debugPrint("Fallback fetch failed: $err");
-      }
+      debugPrint("Error fetching user orders: $e");
     }
-
     return [];
   }
 

@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../Admin/screens/add_medicine_data.dart';
+import 'screens/admin_blockchain_screen.dart';
 import 'dash_theme.dart';
 import 'dashboard_repository.dart';
 import 'widgets/dash_widgets.dart';
@@ -181,6 +182,19 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
                 const Divider(),
                 _drawerItem(Icons.people_alt_rounded, 'All Users', -1, onTap: _showAllUsers),
                 _drawerItem(Icons.bar_chart_rounded, 'Analytics', -1, onTap: _showAnalytics),
+                const Divider(),
+                _drawerItem(
+                  Icons.hub_rounded,
+                  '🔗 Blockchain Admin',
+                  -1,
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const AdminBlockchainScreen()),
+                    );
+                  },
+                ),
                 const Divider(),
                 _drawerItem(Icons.logout_rounded, 'Logout', -1, isDestructive: true, onTap: _logout),
               ],
