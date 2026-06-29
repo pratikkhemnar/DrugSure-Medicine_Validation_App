@@ -78,12 +78,17 @@ class SkinAnalysisService {
   // =========================================================================
   // STEP 1: PUT YOUR FREE GEMINI API KEY HERE
   // Get it free from: https://aistudio.google.com/app/apikey
+  //
+  // Google AI Studio may issue keys in different formats:
+  //   Older format:  AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  //   Newer format:  AQ.Ab8RN6XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  // Both formats are valid — just paste your key below as-is.
   // =========================================================================
-  static const String _geminiApiKey = 'AQ.Ab8RN6LZoOUwNex5ByycDIHmbFrkh-FVTrpbHhvShX-m6wPJjA';
+  static const String _geminiApiKey =  'AQ.Ab8RN6LzVCKnDpWhZGjTKNVcNZQxb12Dxawi1KUr9F_Z1lA63w';   //'AQ.Ab8RN6IcCDYvAzRPkypGWxSBdb3UB_AikwYLaYkZN15oI255UA';
 
   // Using gemini-2.5-flash: free tier, fast, supports image input.
-  // If this model ever gets restricted in your region, switch to
-  // 'gemini-2.0-flash' below (just change the string).
+  // Alternative model (if flash is unavailable in your region):
+  //   static const String _model = 'gemini-2.0-flash';
   static const String _model = 'gemini-2.5-flash';
 
   static String get _endpoint =>
@@ -91,10 +96,14 @@ class SkinAnalysisService {
 
 
   Future<SkinAnalysisResult> analyzeSkinImage(File imageFile) async {
-    if (_geminiApiKey == 'AQ.Ab8RN6LZoOUwNex5ByycDIHmbFrkh-FVTrpbHhvShX-m6wPJjA') {
+    if (_geminiApiKey.trim().isEmpty) {
       throw SkinAnalysisException(
-        'API key not set! Open skin_analysis_service.dart and paste your '
-        'free Gemini API key from https://aistudio.google.com/app/apikey',
+        '⚠️ API key not set!\n\n'
+        'Steps to fix:\n'
+        '1. Go to https://aistudio.google.com/app/apikey\n'
+        '2. Sign in with Google (no credit card needed)\n'
+        '3. Click "Create API Key" and copy it\n'
+        '4. Open skin_analysis_service.dart and paste the key into _geminiApiKey',
       );
     }
 

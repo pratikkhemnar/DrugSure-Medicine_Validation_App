@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../Admin/screens/add_medicine_data.dart';
+import 'add_medicine_data.dart';
 import 'screens/admin_blockchain_screen.dart';
 import 'dash_theme.dart';
 import 'dashboard_repository.dart';

@@ -8,6 +8,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:drugsuremva/screens/Drawer/setting/setting.dart';
 
+import '../drugsure_ecommerce/screens/orders_screen.dart';
+
 class ProfileScreens extends StatefulWidget {
   const ProfileScreens({super.key});
 
@@ -139,7 +141,7 @@ class _ProfileScreenState extends State<ProfileScreens> {
   void navigateToOrders() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const OrdersScreen()),
+      MaterialPageRoute(builder: (context) => OrdersScreen()),
     );
   }
 
@@ -584,164 +586,164 @@ class _ProfileScreenState extends State<ProfileScreens> {
   }
 }
 
-// ===================== ORDERS SCREEN =====================
-class OrdersScreen extends StatefulWidget {
-  const OrdersScreen({super.key});
-
-  @override
-  State<OrdersScreen> createState() => _OrdersScreenState();
-}
-
-class _OrdersScreenState extends State<OrdersScreen> {
-  List<Map<String, dynamic>> orders = [];
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    fetchOrders();
-  }
-
-  Future<void> fetchOrders() async {
-    setState(() => isLoading = true);
-
-    String uid = FirebaseAuth.instance.currentUser!.uid;
-
-    try {
-      QuerySnapshot orderSnapshot = await FirebaseFirestore.instance
-          .collection("orders")
-          .where("userId", isEqualTo: uid)
-          .orderBy("orderDate", descending: true)
-          .get();
-
-      orders = orderSnapshot.docs.map((doc) {
-        return {
-          "id": doc.id,
-          ...doc.data() as Map<String, dynamic>,
-        };
-      }).toList();
-    } catch (e) {
-      print("Error fetching orders: $e");
-    }
-
-    setState(() => isLoading = false);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey.shade100,
-      appBar: AppBar(
-        title: Text("My Orders", style: GoogleFonts.poppins()),
-        backgroundColor: Colors.teal,
-        foregroundColor: Colors.white,
-      ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : orders.isEmpty
-          ? Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.shopping_bag_outlined, size: 80, color: Colors.grey.shade400),
-            const SizedBox(height: 16),
-            Text(
-              "No orders yet",
-              style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              "Your orders will appear here",
-              style: GoogleFonts.poppins(color: Colors.grey),
-            ),
-          ],
-        ),
-      )
-          : ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: orders.length,
-        itemBuilder: (context, index) {
-          final order = orders[index];
-          return Card(
-            margin: const EdgeInsets.only(bottom: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Order #${order['orderId']}",
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: _getOrderStatusColor(order['status']).withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          order['status'] ?? "Pending",
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            color: _getOrderStatusColor(order['status']),
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "Date: ${DateFormat('dd MMM yyyy').format((order['orderDate'] as Timestamp).toDate())}",
-                    style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "Total: ₹${order['totalAmount']}",
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.teal,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "Items: ${order['items']?.length ?? 0}",
-                    style: GoogleFonts.poppins(fontSize: 14),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Color _getOrderStatusColor(String? status) {
-    switch (status) {
-      case "Delivered":
-        return Colors.green;
-      case "Shipped":
-        return Colors.blue;
-      case "Processing":
-        return Colors.orange;
-      case "Cancelled":
-        return Colors.red;
-      default:
-        return Colors.grey;
-    }
-  }
-}
+// // ===================== ORDERS SCREEN =====================
+// class OrdersScreen extends StatefulWidget {
+//   const OrdersScreen({super.key});
+//
+//   @override
+//   State<OrdersScreen> createState() => _OrdersScreenState();
+// }
+//
+// class _OrdersScreenState extends State<OrdersScreen> {
+//   List<Map<String, dynamic>> orders = [];
+//   bool isLoading = true;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     fetchOrders();
+//   }
+//
+//   Future<void> fetchOrders() async {
+//     setState(() => isLoading = true);
+//
+//     String uid = FirebaseAuth.instance.currentUser!.uid;
+//
+//     try {
+//       QuerySnapshot orderSnapshot = await FirebaseFirestore.instance
+//           .collection("orders")
+//           .where("userId", isEqualTo: uid)
+//           .orderBy("orderDate", descending: true)
+//           .get();
+//
+//       orders = orderSnapshot.docs.map((doc) {
+//         return {
+//           "id": doc.id,
+//           ...doc.data() as Map<String, dynamic>,
+//         };
+//       }).toList();
+//     } catch (e) {
+//       print("Error fetching orders: $e");
+//     }
+//
+//     setState(() => isLoading = false);
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Colors.grey.shade100,
+//       appBar: AppBar(
+//         title: Text("My Orders", style: GoogleFonts.poppins()),
+//         backgroundColor: Colors.teal,
+//         foregroundColor: Colors.white,
+//       ),
+//       body: isLoading
+//           ? const Center(child: CircularProgressIndicator())
+//           : orders.isEmpty
+//           ? Center(
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             Icon(Icons.shopping_bag_outlined, size: 80, color: Colors.grey.shade400),
+//             const SizedBox(height: 16),
+//             Text(
+//               "No orders yet",
+//               style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600),
+//             ),
+//             const SizedBox(height: 8),
+//             Text(
+//               "Your orders will appear here",
+//               style: GoogleFonts.poppins(color: Colors.grey),
+//             ),
+//           ],
+//         ),
+//       )
+//           : ListView.builder(
+//         padding: const EdgeInsets.all(16),
+//         itemCount: orders.length,
+//         itemBuilder: (context, index) {
+//           final order = orders[index];
+//           return Card(
+//             margin: const EdgeInsets.only(bottom: 16),
+//             shape: RoundedRectangleBorder(
+//               borderRadius: BorderRadius.circular(12),
+//             ),
+//             child: Padding(
+//               padding: const EdgeInsets.all(16),
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       Text(
+//                         "Order #${order['orderId']}",
+//                         style: GoogleFonts.poppins(
+//                           fontWeight: FontWeight.bold,
+//                           fontSize: 16,
+//                         ),
+//                       ),
+//                       Container(
+//                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+//                         decoration: BoxDecoration(
+//                           color: _getOrderStatusColor(order['status']).withOpacity(0.1),
+//                           borderRadius: BorderRadius.circular(8),
+//                         ),
+//                         child: Text(
+//                           order['status'] ?? "Pending",
+//                           style: GoogleFonts.poppins(
+//                             fontSize: 12,
+//                             color: _getOrderStatusColor(order['status']),
+//                             fontWeight: FontWeight.w600,
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                   const SizedBox(height: 8),
+//                   Text(
+//                     "Date: ${DateFormat('dd MMM yyyy').format((order['orderDate'] as Timestamp).toDate())}",
+//                     style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey),
+//                   ),
+//                   const SizedBox(height: 8),
+//                   Text(
+//                     "Total: ₹${order['totalAmount']}",
+//                     style: GoogleFonts.poppins(
+//                       fontSize: 16,
+//                       fontWeight: FontWeight.bold,
+//                       color: Colors.teal,
+//                     ),
+//                   ),
+//                   const SizedBox(height: 8),
+//                   Text(
+//                     "Items: ${order['items']?.length ?? 0}",
+//                     style: GoogleFonts.poppins(fontSize: 14),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           );
+//         },
+//       ),
+//     );
+//   }
+//
+//   Color _getOrderStatusColor(String? status) {
+//     switch (status) {
+//       case "Delivered":
+//         return Colors.green;
+//       case "Shipped":
+//         return Colors.blue;
+//       case "Processing":
+//         return Colors.orange;
+//       case "Cancelled":
+//         return Colors.red;
+//       default:
+//         return Colors.grey;
+//     }
+//   }
+// }
 
 // ===================== ADDRESS SCREEN =====================
 class AddressScreen extends StatefulWidget {

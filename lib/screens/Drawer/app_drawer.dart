@@ -1,16 +1,12 @@
-import 'package:drugsuremva/Admin/screens/add_medicine_data.dart';
 import 'package:drugsuremva/auth/login.dart';
 import 'package:drugsuremva/screens/Drawer/appAboutScreen.dart';
 import 'package:drugsuremva/screens/Drawer/supportScreen.dart';
 import 'package:drugsuremva/screens/navScreens/default_screen/startDefaultScreen.dart';
 import 'package:drugsuremva/screens/navScreens/report_screen/adverse_event_report_screen.dart';
-import 'package:drugsuremva/under_working.dart';
 import 'package:drugsuremva/screens/Drawer/setting/setting.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:share_plus/share_plus.dart';
-import '../../Admin/screens/adminDashboard_screen.dart';
-import '../../admin_dashboard/admin_dashboard_screen.dart';
 import '../../auth/profileScreen.dart';
 import 'notification_screen.dart';
 
@@ -64,7 +60,6 @@ class AppDrawer extends StatelessWidget {
     final menuItems = [
 
       _MenuItem(Icons.home_filled, "Home", const StartDefaultScreen()),
-      _MenuItem(Icons.home_filled, "Home", const AdminDashboardScreen()),
       _MenuItem(Icons.headset_mic, "Support", const SupportScreen()),
       _MenuItem(Icons.notifications, "Notifications", const NotificationScreen()),
       _MenuItem(Icons.report, "Report", AdverseEventReportScreen()),

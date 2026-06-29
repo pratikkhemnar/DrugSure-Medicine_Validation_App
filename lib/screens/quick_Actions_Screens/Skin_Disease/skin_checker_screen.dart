@@ -153,27 +153,7 @@ class _SkinCheckerScreenState extends State<SkinCheckerScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Disclaimer banner - IMPORTANT, keep this visible always
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.amber.shade50,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.amber.shade300),
-              ),
-              child: const Row(
-                children: [
-                  Icon(Icons.info_outline, color: Colors.amber, size: 20),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'AI-based estimate only. Not a substitute for professional medical diagnosis.',
-                      style: TextStyle(fontSize: 12.5),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+
             const SizedBox(height: 16),
 
             // Image preview / placeholder
