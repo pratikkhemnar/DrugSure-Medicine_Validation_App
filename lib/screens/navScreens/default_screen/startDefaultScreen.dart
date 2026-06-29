@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drugsuremva/screens/OurServices_screen/Health%20Assesment/health_risk_assessment_screen.dart';
+import 'package:drugsuremva/screens/quick_Actions_Screens/Skin_Disease/skin_checker_screen.dart';
 import 'package:drugsuremva/screens/quick_Actions_Screens/barcodes_screen/screens/qr_scanner_screen.dart';
 import 'package:drugsuremva/under_working.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -421,7 +422,7 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
             icon: Icons.add_photo_alternate,
             color: Colors.green,
             label: "Skin disease",
-            onTap: () => _navigateToHealthNews(context)),
+            onTap: () => _navigateToSkinDisease(context)),
         _buildActionButton(
             icon: Icons.search_off_outlined,
             color: Colors.purple,
@@ -572,15 +573,15 @@ class _StartDefaultScreenState extends State<StartDefaultScreen> {
         .push(MaterialPageRoute(builder: (context) => ScannerScreen()));
   }
 
-  void _navigateToHealthNews(BuildContext context) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => UnderWorking()));
-    //Skin Disease
-  }
-
   void _navigateToNearbyPharmacies(BuildContext context) {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => NearbyPharmaciesPro()));
+  }
+
+  void _navigateToSkinDisease(BuildContext context) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => SkinCheckerScreen()));
+    //Skin Disease
   }
 
   void _symptomCheckerScreen(BuildContext context) {

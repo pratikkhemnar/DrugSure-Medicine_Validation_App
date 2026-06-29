@@ -19,9 +19,8 @@ class _SymptomCheckerScreenState extends State<SymptomCheckerScreen> {
   bool isListening = false;
   bool isSpeaking = false;
 
-  // ⚠️ WARNING: It is highly recommended to store API keys in an .env file
-  // rather than hardcoding them in production apps.
-  final String apiKey = "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";
+
+  final String apiKey ="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";
 
   @override
   void initState() {
